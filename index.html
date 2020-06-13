@@ -2,24 +2,44 @@
 <html lang="en">
 
 <head>
-    <title>Arman Shojaei > Personal website</title>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-121313426-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+
+        gtag('config', 'UA-121313426-1');
+    </script>
+    <meta name="google-site-verification" content="cAoqbb7qHCt-x-5H2mhOn2ECtCX1Zmc6TLgjfwVhsrI" />
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <meta name="description" content="This is the personal website of Arman Shojaei, A perfectionist & minimalist designer and developer">
-    <meta name="keywords" content="Web developer, front-end developer">
-    <meta name="author" content="Arman Shojaei">
-    <meta name=og:keywords content="Web developer, front-end developer" />
-    <meta name=theme-color content="#FFECB3" />
-    <meta property=og:site_name content="Arman Shojaei" />
-    <meta property=og:url content="" />
-    <meta property=og:title content="Arman Shojaei" />
-    <meta property=og:type content=website />
-    <meta property=og:image content="" />
-    <meta property=og:description content="This is the personal website of Arman Shojaei, A perfectionist & minimalist designer and developer"
-    />
 
+    <!-- Primary Meta Tags -->
+    <title>Arman Shojaei - UI Developer</title>
+    <meta name="title" content="Arman Shojaei - UI Developer">
+    <meta name="description" content="I'm something between UI Designer and Front-end Developer">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://arishojaei.github.io/">
+    <meta property="og:title" content="Arman Shojaei - UI Developer">
+    <meta property="og:description" content="I'm something between UI Designer and Front-end Developer">
+    <meta property="og:image" content="https://metatags.io/assets/meta-tags-16a33a6a8531e519cc0936fbba0ad904e52d35f34a46c97a2c9f6f7dd7d336f2.png">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://arishojaei.github.io/">
+    <meta property="twitter:title" content="Arman Shojaei - UI Developer">
+    <meta property="twitter:description" content="I'm something between UI Designer and Front-end Developer">
+    <meta property="twitter:image" content="https://metatags.io/assets/meta-tags-16a33a6a8531e519cc0936fbba0ad904e52d35f34a46c97a2c9f6f7dd7d336f2.png">
+    
+    <meta name=theme-color content="#FFECB3" />
     <link rel="shortcut icon" href="./img/favicon.ico" type="image/x-icon">
     <link rel="icon" href="./img/favicon.ico" type="image/x-icon">
 
@@ -53,14 +73,13 @@
         <h1>I'm Arman Shojaei</h1>
 
         <!-- Expertise -->
-        <h4 class="mt-3 text-muted">Front-end developer</h4>
+        <h4 class="mt-3 text-muted">UI Developer</h4>
 
         <!-- Bio -->
         <p class="bio mt-5">
-            Laughing and introverted guy, sometimes I am a perfectionist designer but not so much that I can finish my job <span role="img">😅</span> Loves designing
-            challenging and trying out new methods! <span role="img">🤓</span> And of course, a fan of strategic games 😎
-            games
+            I am a UI Designer and Front-end Developer who started my career professionally in 2016 and since then has completed more than 30 large and small projects and has experience working in various companies.
         </p>
+
 
         <div class="social">
             <a href="https://www.linkedin.com/in/armanshojaei" target="_blank" data-toggle="tooltip" data-placement="top" title="LinkedIn">
@@ -71,9 +90,6 @@
             </a>
             <a href="https://dribbble.com/armanshojaei" target="_blank" data-toggle="tooltip" data-placement="top" title="Dribbble">
                 <i class="fab fa-dribbble fa-lg"></i>
-            </a>
-            <a href="http://instagram.com/armanshojaei_" target="_blank" data-toggle="tooltip" data-placement="top" title="Instagram">
-                <i class="fab fa-instagram fa-lg"></i>
             </a>
             <a href="https://atbox.io/armanshojaei" target="_blank" data-toggle="tooltip" data-placement="top" title="Persian resume">
                 <img src="./img/atbox.png" alt="">
@@ -86,15 +102,15 @@
             </a>
         </div>
 
-        <!-- <div class="works d-flex flex-column mt-4">
-            <span class="text-muted">Want to see my works?</span>
+
+        <div class="works d-flex flex-column mt-4">
+            <span class="text-muted">Download my</span>
             <h3 class="font-weight-bold">
-                <a class="goTo" href="./projects.html">
-                    Projects
-                    <i class="fas fa-hand-point-right"></i>
+                <a href="./files/Arman_Shojaei_CV.pdf" download>
+                    Pdf Resume
                 </a>
             </h3>
-        </div> -->
+        </div>
 
     </div>
     <!-- / Main -->
@@ -109,7 +125,8 @@
     </div>
     <!-- / Cover - User image -->
 
-    <span class="wellcome inHome display-4 d-none d-md-block">Oh! Hi there
+    <span class="wellcome inHome display-4 d-none d-md-block">
+        Oh! Hi
         <span role="img">😍</span>
     </span>
     <span class="wellcome inHome display-4 d-md-none">Wellcome</span>
@@ -127,6 +144,7 @@
     <script>
         $(function () {
             $('[data-toggle="tooltip"]').tooltip()
+
         })
     </script>
 

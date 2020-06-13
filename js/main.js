@@ -1,14 +1,14 @@
 
 let tlHome = new TimelineMax();
 tlHome.timeScale(2);
-tlHome.from('.inHome', 3, {
+tlHome.from('.inHome', 2, {
     opacity: 0,
     delay: 3
   })
-  .to('.inHome', 1.5, {
+  .to('.inHome', .5, {
     opacity: 0,
     y: -80,
-    delay: 5
+    delay: 2
   })
   .to('.hider', 0, {
     display: 'none'
