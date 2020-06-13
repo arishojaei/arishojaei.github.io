@@ -1,0 +1,266 @@
+// Copyright 2018 Arman Shojaei
+// Project name: vCard
+// author: Arman Shojaei - https.
+@import url('https://fonts.googleapis.com/css?family=Work+Sans:400,700,800');
+@import 'media';
+// Vars
+$trans: all 350ms;
+body {
+    min-height: 100vh;
+    display: flex;
+    direction: ltr;
+    font-family: 'Work Sans', sans-serif;
+    // background: rgb(1, 1, 1);
+    // color: white;
+}
+
+a {
+    text-decoration: none;
+    color: rgb(136, 136, 136);
+    transition: $trans;
+    &:hover {
+        text-decoration: none;
+        color: #000;
+    }
+}
+
+* {
+    font-size: 100%;
+    box-sizing: border-box;
+    &::selection {
+        background: #FFF8E1;
+    }
+    &::-moz-selection {
+        background: #FFF8E1;
+    }
+}
+
+.cover {
+    position: relative;
+    overflow: hidden;
+    top: 0;
+    width: 70%;
+    min-height: 100%;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    .imgHolder {
+        background: #111;
+        width: 100%;
+        height: 100%;
+        border: 15px solid #131313;
+        overflow: hidden;
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    }
+    @include up-568 {
+        display: flex;
+    }
+    @include up-992 {
+        .imgHolder {
+            width: 80%;
+            height: 80%;
+        }
+        $coverBgColor: #FFECB3;
+        .coverBg {
+            position: absolute;
+            height: 100%;
+            width: 50%;
+            background: $coverBgColor;
+            right: 0;
+            z-index: -1;
+            transform: skewX(-20deg);
+            &:after {
+                content: '';
+                position: absolute;
+                height: 100%;
+                width: 50%;
+                background: $coverBgColor;
+                right: 0;
+                transform: skewX(20deg);
+            }
+        }
+    }
+}
+
+
+.content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    width: 100%;
+    padding: 80px 35px;
+    &:before,
+    &:after {
+        content: ' ';
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 10px;
+        z-index: -1;
+    }
+    &:before {
+        background: #FFECB3;
+        width: 100%;
+    }
+    h1 {
+        @media (max-width: 768px) {
+            font-size: 31px;
+        }
+    }
+    h1,
+    h2 {
+        display: inline-flex;
+        font-weight: 800;
+        position: relative;
+        @include up-768 {
+            &:before {
+                content: ' ';
+                position: absolute;
+                bottom: 0;
+                width: 100%;
+                height: 40%;
+                z-index: -1;
+            }
+        }
+    }
+    h1 {
+        &:before {
+            background: #FFECB3;
+            border-radius: 4px;
+        }
+    }
+    h2 {
+        &:before {
+            background: #FFECB3;
+            border-radius: 4px;
+        }
+    }
+    .avatar {
+        width: 190px;
+        height: 190px;
+        border-radius: 5px;
+        margin-bottom: 35px;
+        overflow: hidden;
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        @include up-568 {
+            display: none;
+        }
+    }
+    .social {
+        display: flex;
+        flex-wrap: wrap;
+        margin-top: 30px;
+        a {
+            border-radius: 100%;
+            padding: 5px;
+            background: #222;
+            color: white;
+            margin-right: 15px;
+            margin-bottom: 15px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 350ms;
+            &:hover {
+                background: #000;
+                transform: translateY(-3px) !important;
+                box-shadow: 0 5px 10px rgba(0,0,0,0.15); 
+            }
+            &:focus,
+            &:active {
+                background: #000;
+                outline: none;
+            }
+            img {
+                width: auto;
+                height: 20px;
+            }
+        }
+    }
+    @include up-568 {
+        padding: 80px 45px;
+    }
+    @include up-768 {
+        &:before,
+        &:after {
+            display: none;
+        }
+    }
+    @include up-992 {
+        padding: 85px;
+        p {
+            max-width: 70%;
+        }
+    }
+}
+
+.tooltip {
+    margin-bottom: 5px;
+}
+
+.tooltip-inner {
+    font-weight: bold;
+    font-family: 'Work Sans', sans-serif !important;
+}
+
+.wellcome {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translateY(-50%) translateX(-50%);
+    z-index: 99;
+}
+
+.hider {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: #fff;
+    z-index: 98;
+}
+
+.works {
+    a {
+        color: #333;
+        &:hover {
+            text-decoration: none;
+            color: #000;
+            svg {
+                transform: translateX(8px);
+            }
+        }
+        svg {
+            transition: all 400ms;
+        }
+    }
+}
+
+#dots {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    z-index: -2;
+}
+
+.posts {
+    a {
+        display: flex;
+        align-items: center;
+        border-bottom: 1px solid #eee;
+        padding: 15px 0 8px 0;
+        &:last-child {
+            border: 0;
+        }
+    }
+}

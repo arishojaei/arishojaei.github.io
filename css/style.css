@@ -1,0 +1,332 @@
+@import url("https://fonts.googleapis.com/css?family=Work+Sans:400,700,800");
+body {
+  min-height: 100vh;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  direction: ltr;
+  font-family: 'Work Sans', sans-serif;
+}
+
+a {
+  text-decoration: none;
+  color: #888888;
+  -webkit-transition: all 350ms;
+  transition: all 350ms;
+}
+
+a:hover {
+  text-decoration: none;
+  color: #000;
+}
+
+* {
+  font-size: 100%;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
+*::-moz-selection {
+  background: #FFF8E1;
+}
+
+*::selection {
+  background: #FFF8E1;
+}
+
+*::-moz-selection {
+  background: #FFF8E1;
+}
+
+.cover {
+  position: relative;
+  overflow: hidden;
+  top: 0;
+  width: 70%;
+  min-height: 100%;
+  display: none;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.cover .imgHolder {
+  background: #111;
+  width: 100%;
+  height: 100%;
+  border: 15px solid #131313;
+  overflow: hidden;
+}
+
+.cover .imgHolder img {
+  width: 100%;
+  height: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+
+@media screen and (min-width: 568px) {
+  .cover {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+  }
+}
+
+@media screen and (min-width: 992px) {
+  .cover .imgHolder {
+    width: 80%;
+    height: 80%;
+  }
+  .cover .coverBg {
+    position: absolute;
+    height: 100%;
+    width: 50%;
+    background: #FFECB3;
+    right: 0;
+    z-index: -1;
+    -webkit-transform: skewX(-20deg);
+            transform: skewX(-20deg);
+  }
+  .cover .coverBg:after {
+    content: '';
+    position: absolute;
+    height: 100%;
+    width: 50%;
+    background: #FFECB3;
+    right: 0;
+    -webkit-transform: skewX(20deg);
+            transform: skewX(20deg);
+  }
+}
+
+.content {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: start;
+      -ms-flex-align: start;
+          align-items: flex-start;
+  width: 100%;
+  padding: 80px 35px;
+}
+
+.content:before, .content:after {
+  content: ' ';
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 10px;
+  z-index: -1;
+}
+
+.content:before {
+  background: #FFECB3;
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .content h1 {
+    font-size: 31px;
+  }
+}
+
+.content h1,
+.content h2 {
+  display: -webkit-inline-box;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  font-weight: 800;
+  position: relative;
+}
+
+@media screen and (min-width: 768px) {
+  .content h1:before,
+  .content h2:before {
+    content: ' ';
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 40%;
+    z-index: -1;
+  }
+}
+
+.content h1:before {
+  background: #FFECB3;
+  border-radius: 4px;
+}
+
+.content h2:before {
+  background: #FFECB3;
+  border-radius: 4px;
+}
+
+.content .avatar {
+  width: 190px;
+  height: 190px;
+  border-radius: 5px;
+  margin-bottom: 35px;
+  overflow: hidden;
+}
+
+.content .avatar img {
+  width: 100%;
+  height: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+
+@media screen and (min-width: 568px) {
+  .content .avatar {
+    display: none;
+  }
+}
+
+.content .social {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  margin-top: 30px;
+}
+
+.content .social a {
+  border-radius: 100%;
+  padding: 5px;
+  background: #222;
+  color: white;
+  margin-right: 15px;
+  margin-bottom: 15px;
+  width: 40px;
+  height: 40px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-transition: all 350ms;
+  transition: all 350ms;
+}
+
+.content .social a:hover {
+  background: #000;
+  -webkit-transform: translateY(-3px) !important;
+          transform: translateY(-3px) !important;
+  -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
+          box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
+}
+
+.content .social a:focus, .content .social a:active {
+  background: #000;
+  outline: none;
+}
+
+.content .social a img {
+  width: auto;
+  height: 20px;
+}
+
+@media screen and (min-width: 568px) {
+  .content {
+    padding: 80px 45px;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .content:before, .content:after {
+    display: none;
+  }
+}
+
+@media screen and (min-width: 992px) {
+  .content {
+    padding: 85px;
+  }
+  .content p {
+    max-width: 70%;
+  }
+}
+
+.tooltip {
+  margin-bottom: 5px;
+}
+
+.tooltip-inner {
+  font-weight: bold;
+  font-family: 'Work Sans', sans-serif !important;
+}
+
+.wellcome {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translateY(-50%) translateX(-50%);
+          transform: translateY(-50%) translateX(-50%);
+  z-index: 99;
+}
+
+.hider {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background: #fff;
+  z-index: 98;
+}
+
+.works a {
+  color: #333;
+}
+
+.works a:hover {
+  text-decoration: none;
+  color: #000;
+}
+
+.works a:hover svg {
+  -webkit-transform: translateX(8px);
+          transform: translateX(8px);
+}
+
+.works a svg {
+  -webkit-transition: all 400ms;
+  transition: all 400ms;
+}
+
+#dots {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  z-index: -2;
+}
+
+.posts a {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  border-bottom: 1px solid #eee;
+  padding: 15px 0 8px 0;
+}
+
+.posts a:last-child {
+  border: 0;
+}
+/*# sourceMappingURL=style.css.map */
