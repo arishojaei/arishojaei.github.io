@@ -96,6 +96,13 @@ nav {
   justify-content: space-between;
   align-items: center;
   padding: 16px 0;
+  flex-direction: column;
+  gap: 24px;
+}
+@media screen and (min-width: 992px) {
+  nav {
+    flex-direction: row;
+  }
 }
 nav .nav-links {
   display: flex;
@@ -106,29 +113,33 @@ nav .nav-links a {
   font-weight: 300;
   text-transform: uppercase;
 }
+nav .nav-links a.active, nav .nav-links a[aria-current=page] {
+  background-size: 0 2px, 100% 2px;
+}
 
 header {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 160px 0;
+  padding: 60px 0;
   gap: 12px;
   text-align: center;
 }
 header h1 {
-  font-size: 48px;
+  font-size: 32px;
   margin: 0;
   max-width: 90%;
 }
 header p {
-  font-size: 26px;
+  font-size: 18px;
   max-width: 90%;
   margin: 0;
   padding-top: 8px;
 }
 @media screen and (min-width: 992px) {
   header {
+    padding: 160px 0;
     flex-direction: row;
     justify-content: space-between;
     align-items: flex-start;
@@ -152,7 +163,7 @@ header p {
   grid-template-columns: repeat(1, 1fr);
   gap: 24px;
 }
-@media screen and (min-width: 992px) {
+@media screen and (min-width: 556px) {
   .portfolio {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -161,7 +172,7 @@ header p {
     aspect-ratio: 2/3;
   }
 }
-@media screen and (min-width: 1440px) {
+@media screen and (min-width: 1024px) {
   .portfolio {
     grid-template-columns: repeat(3, 1fr);
   }
@@ -177,17 +188,36 @@ header p {
 }
 
 footer {
-  padding: 48px 0;
+  padding: 48px 0 8px;
   margin-top: 48px;
   border-top: 1px solid #000;
 }
 footer p {
   font-weight: 400;
   opacity: 0.3;
+  text-align: center;
+}
+@media screen and (min-width: 992px) {
+  footer p {
+    text-align: left;
+  }
+}
+footer > p {
+  margin-top: 24px;
 }
 footer .top {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
+  flex-direction: column;
+  gap: 24px;
+  text-align: center;
+}
+@media screen and (min-width: 992px) {
+  footer .top {
+    flex-direction: row;
+    justify-content: space-between;
+    text-align: left;
+  }
 }
 footer .top p {
   margin: 0;
@@ -197,7 +227,14 @@ footer .top a {
 }
 footer .top .social-links {
   display: flex;
-  gap: 16px;
+  gap: 2px;
+  flex-direction: column;
+}
+@media screen and (min-width: 992px) {
+  footer .top .social-links {
+    flex-direction: row;
+    gap: 16px;
+  }
 }
 
 .about {
@@ -212,7 +249,8 @@ footer .top .social-links {
   }
 }
 .about .me {
-  width: 400px;
+  max-width: 400px;
+  width: 100%;
   aspect-ratio: 4/5;
   overflow: hidden;
   border-radius: 8px;
