@@ -1,0 +1,12 @@
+{
+  "name": "ari-personal-website",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "sass --no-source-map --watch style/scss/:style/compiled/"
+  },
+  "author": "Ari Shojaei",
+  "license": "ISC",
+  "dependencies": {
+    "sass": "^1.59.3"
+  }
+}
