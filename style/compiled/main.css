@@ -1,5 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Jost:ital,wght@0,100..900;1,100..900&display=swap");
-.font-headline, .about h1, footer .top a, header h1 {
+.font-headline, .scrolling-text .text, .about h1, footer .top a, header h1 {
   font-family: "Instrument Serif", serif;
   font-weight: 400;
   font-style: normal;
@@ -158,25 +158,19 @@ header p {
   }
 }
 
-.portfolio {
-  display: grid;
-  grid-template-columns: repeat(1, 1fr);
-  gap: 24px;
+.section-header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 16px;
 }
-@media screen and (min-width: 556px) {
-  .portfolio {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  .portfolio > div {
-    width: 100%;
-    aspect-ratio: 2/3;
-  }
+.section-header a {
+  font-weight: 400;
 }
-@media screen and (min-width: 1024px) {
-  .portfolio {
-    grid-template-columns: repeat(3, 1fr);
-  }
+.section-header h2 {
+  margin: 0;
 }
+
 .portfolio img {
   width: 100%;
   height: auto;
@@ -237,6 +231,10 @@ footer .top .social-links {
   }
 }
 
+.grid-item {
+  width: 200px;
+}
+
 .about {
   padding: 100px 0;
   display: grid;
@@ -269,4 +267,55 @@ footer .top .social-links {
   font-size: 26px;
   margin: 0;
   padding-top: 8px;
+}
+
+.scrolling-text {
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  transform: rotate(-1deg);
+  margin-top: 48px;
+}
+.scrolling-text .rail {
+  display: flex;
+  animation: marquee 25s linear infinite;
+  will-change: transform;
+}
+.scrolling-text .marquee-text {
+  white-space: nowrap;
+  padding-right: 2rem;
+  flex-shrink: 0;
+}
+.scrolling-text .text {
+  white-space: nowrap;
+  font-size: 46px;
+  font-style: italic;
+}
+@media (min-width: 768px) {
+  .scrolling-text .text {
+    font-size: 64px;
+  }
+}
+@media (min-width: 1024px) {
+  .scrolling-text .text {
+    font-size: 96px;
+  }
+}
+.scrolling-text .text span:nth-of-type(odd) {
+  opacity: 0.5;
+}
+@media (prefers-reduced-motion: reduce) {
+  .scrolling-text .rail {
+    animation: none;
+  }
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
 }

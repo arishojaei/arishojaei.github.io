@@ -165,24 +165,20 @@ header {
   }
 }
 
+.section-header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 16px;
+  a {
+    font-weight: 400;
+  }
+  h2 {
+    margin: 0;
+  }
+}
+
 .portfolio {
-  display: grid;
-  grid-template-columns: repeat(1, 1fr);
-  gap: 24px;
-  
-  
-  @media screen and (min-width: 556px) {
-    grid-template-columns: repeat(2, 1fr);
-    > div {
-      width: 100%;
-      aspect-ratio: 2 / 3;
-    }
-  }
-  
-  @media screen and (min-width: 1024px) {
-    grid-template-columns: repeat(3, 1fr);
-  }
-  
   img {
     width: 100%;
     height: auto;
@@ -248,6 +244,8 @@ footer {
   }
 }
 
+.grid-item { width: 200px; }
+
 .about {
   padding: 100px 0;
   display: grid;
@@ -283,5 +281,80 @@ footer {
     font-size: 26px;
     margin: 0;
     padding-top: 8px;
+  }
+}
+
+.scrolling-text {
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  transform: rotate(-1deg);
+  margin-top: 48px;
+
+  .rail {
+    display: flex;
+    animation: marquee 25s linear infinite;
+    will-change: transform;
+  }
+
+  .marquee-text {
+    white-space: nowrap;
+    padding-right: 2rem;
+    flex-shrink: 0;
+  }
+
+  .text {
+    white-space: nowrap;
+    @extend .font-headline;
+    font-size: 46px;
+    font-style: italic;
+
+    @media (min-width: 768px) {
+      font-size: 64px;
+    }
+
+    @media (min-width: 1024px) {
+      font-size: 96px;
+    }
+
+    span {
+      &:nth-of-type(odd) {
+        opacity: .5;
+      }
+    }
+  }
+
+  // &:hover .rail {
+  //   animation-play-state: paused;
+  // }
+
+  // Responsive speed adjustments
+  // @media (max-width: 768px) {
+  //   .rail {
+  //     animation-duration: 50s; // Slower on mobile
+  //   }
+  // }
+
+  // @media (min-width: 1200px) {
+  //   .rail {
+  //     animation-duration: 55s; // Faster on desktop
+  //   }
+  // }
+
+  // Reduce motion for accessibility
+  @media (prefers-reduced-motion: reduce) {
+    .rail {
+      animation: none;
+    }
+  }
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
   }
 }
