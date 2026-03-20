@@ -1,1 +1,9 @@
-{ "models": [] }
+{
+  "models": [
+    {
+      "name": "Mervilie",
+      "slug": "mervilie",
+      "instagram": "https://www.instagram.com/phibiduboi/"
+    }
+  ]
+}
