@@ -191,6 +191,75 @@
     .sortable-ghost { opacity: 0.35; }
     .sortable-drag  { opacity: 0; }
 
+    /* Photo edit button */
+    .edit-btn {
+      position: absolute;
+      top: 6px; left: 6px;
+      width: 28px; height: 28px;
+      background: rgba(255,255,255,0.92);
+      border: none; cursor: pointer;
+      font-size: 0.7rem; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; transition: opacity 0.18s;
+      letter-spacing: 0.04em; text-transform: uppercase;
+    }
+    .photo-card:hover .edit-btn { opacity: 1; }
+
+    /* Photo metadata badge */
+    .photo-meta {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      background: rgba(0,0,0,0.55);
+      padding: 5px 6px 4px;
+      opacity: 0; transition: opacity 0.18s;
+    }
+    .photo-card .photo-meta { opacity: 1; }
+    .photo-meta span {
+      display: block; color: #fff;
+      font-size: 0.65rem; line-height: 1.4;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+
+    /* Main photo badge */
+    .main-badge {
+      position: absolute;
+      top: 6px; right: 6px;
+      background: #111; color: #fff;
+      font-size: 0.55rem; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      padding: 3px 6px; display: none;
+    }
+    .main-badge.visible { display: block; }
+
+    /* Model rows in Models section */
+    .model-row {
+      display: flex; gap: 8px; align-items: center; margin-bottom: 8px;
+    }
+    .model-row .field { flex: 1; }
+    .model-row .slug-preview {
+      font-size: 0.72rem; color: #999; white-space: nowrap;
+      padding: 0 8px; min-width: 100px;
+    }
+
+    /* ── Edit modal ──────────────────────────────────── */
+    #edit-modal {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.55); z-index: 200;
+      align-items: center; justify-content: center;
+    }
+    #edit-modal.active { display: flex; }
+    .edit-modal-box {
+      background: #fff; border: 2px solid #111;
+      padding: 28px 32px; width: 420px; max-width: 94vw;
+    }
+    .edit-modal-box h3 {
+      font-size: 0.78rem; letter-spacing: 0.1em; text-transform: uppercase;
+      font-weight: 600; margin-bottom: 20px;
+    }
+    .edit-modal-actions {
+      display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;
+    }
+
     /* ── Empty state ─────────────────────────────── */
     #empty-state {
       display: none; text-align: center;
@@ -289,6 +358,8 @@
       <button class="nav-btn"        data-section="header"  onclick="switchSection('header')">Header</button>
       <button class="nav-btn"        data-section="about"   onclick="switchSection('about')">About</button>
       <button class="nav-btn"        data-section="footer"  onclick="switchSection('footer')">Footer Links</button>
+      <div class="nav-divider"></div>
+      <button class="nav-btn"        data-section="models"  onclick="switchSection('models')">Models</button>
     </aside>
 
     <!-- Content -->
@@ -362,7 +433,46 @@
         <button class="btn outline" onclick="addFooterLinkRow()">+ Add Link</button>
       </section>
 
+      <!-- ── Models ── -->
+      <section id="section-models">
+        <div class="section-header">
+          <h2>Models</h2>
+          <button class="btn" onclick="saveModelsData()">Save Changes</button>
+        </div>
+        <p class="hint">Each model gets a page at <strong>arishojaei.com/[slug]</strong>. Assign photos to models from the Photos section.</p>
+        <div id="models-list"></div>
+        <button class="btn outline" style="margin-top:4px" onclick="addModelRow()">+ Add Model</button>
+      </section>
+
     </main>
+  </div>
+</div>
+
+<!-- ── Photo edit modal ───────────────────────────── -->
+<div id="edit-modal">
+  <div class="edit-modal-box">
+    <h3>Edit Photo Info</h3>
+    <div class="form-group">
+      <label>Model</label>
+      <select id="edit-model-select" class="field">
+        <option value="">— No model —</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+        <input type="checkbox" id="edit-featured" style="width:15px;height:15px;accent-color:#111">
+        <span>Main photo for this model</span>
+      </label>
+      <p style="font-size:0.72rem;color:#999;margin-top:4px">Appears on the left of the model page</p>
+    </div>
+    <div class="form-group">
+      <label>Instagram URL <span style="color:#bbb;font-weight:400">(override)</span></label>
+      <input type="text" id="edit-ig" class="field" placeholder="https://instagram.com/username">
+    </div>
+    <div class="edit-modal-actions">
+      <button class="btn outline" onclick="closeEditModal()">Cancel</button>
+      <button class="btn" onclick="saveEditModal()">Save</button>
+    </div>
   </div>
 </div>
 
@@ -389,6 +499,7 @@
 
   // ── State ──────────────────────────────────────
   var photos = [];
+  var models = [];
   var site   = { header: {}, about: {}, footer: { links: [] } };
   var sortable = null;
 
@@ -411,15 +522,18 @@
   // ── Load all data ──────────────────────────────
   function loadAll() {
     Promise.all([
-      fetch('/data/photos.json?t=' + Date.now()).then(function (r) { return r.json(); }),
-      fetch('/data/site.json?t='   + Date.now()).then(function (r) { return r.json(); })
+      fetch('/data/photos.json?t='  + Date.now()).then(function (r) { return r.json(); }),
+      fetch('/data/site.json?t='    + Date.now()).then(function (r) { return r.json(); }),
+      fetch('/data/models.json?t='  + Date.now()).then(function (r) { return r.json(); })
     ]).then(function (results) {
-      photos = results[0].photos || [];
+      photos = results[0].photos  || [];
       site   = results[1];
+      models = results[2].models  || [];
       renderPhotos();
       populateHeader();
       populateAbout();
       populateFooter();
+      populateModels();
     }).catch(function (err) { toast('Failed to load data: ' + err.message); });
   }
 
@@ -453,13 +567,45 @@
     photos.forEach(function (photo, i) {
       var card    = document.createElement('div');
       card.className = 'photo-card';
-      card.setAttribute('data-src', photo.src);
-      card.setAttribute('data-alt', photo.alt);
+      card.setAttribute('data-src',   photo.src);
+      card.setAttribute('data-alt',   photo.alt);
+      card.setAttribute('data-model', photo.model     || '');
+      card.setAttribute('data-ig',       photo.instagram || '');
+      card.setAttribute('data-featured', photo.featured ? '1' : '');
 
       var img = document.createElement('img');
       img.src     = '/' + photo.src;
       img.alt     = photo.alt;
       img.loading = 'lazy';
+
+      // Edit button (top-left)
+      var editBtn = document.createElement('button');
+      editBtn.className = 'edit-btn';
+      editBtn.title     = 'Edit model info';
+      editBtn.textContent = 'Edit';
+      editBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        openEditModal(card);
+      });
+
+      // Main photo badge
+      var mainBadge = document.createElement('div');
+      mainBadge.className = 'main-badge' + (photo.featured ? ' visible' : '');
+      mainBadge.textContent = 'Main';
+
+      // Metadata badge (bottom, always visible)
+      var meta = document.createElement('div');
+      meta.className = 'photo-meta';
+      var modelSpan = document.createElement('span');
+      var modelObj = models.filter(function(m) { return m.slug === photo.model; })[0];
+      modelSpan.textContent = modelObj ? modelObj.name : (photo.model || '');
+      var igSpan = document.createElement('span');
+      if (photo.instagram) {
+        var igm = photo.instagram.match(/instagram\.com\/([^/?#]+)/);
+        igSpan.textContent = igm ? '@' + igm[1] : '';
+      }
+      meta.appendChild(modelSpan);
+      meta.appendChild(igSpan);
 
       var overlay = document.createElement('div');
       overlay.className = 'overlay';
@@ -475,6 +621,9 @@
 
       overlay.appendChild(btn);
       card.appendChild(img);
+      card.appendChild(editBtn);
+      card.appendChild(mainBadge);
+      card.appendChild(meta);
       card.appendChild(overlay);
       frag.appendChild(card);
     });
@@ -500,10 +649,93 @@
     var cards = document.querySelectorAll('#photo-grid .photo-card');
     var arr = [];
     cards.forEach(function (card) {
-      arr.push({ src: card.getAttribute('data-src'), alt: card.getAttribute('data-alt') });
+      arr.push({
+        src:       card.getAttribute('data-src'),
+        alt:       card.getAttribute('data-alt'),
+        model:     card.getAttribute('data-model') || '',
+        instagram: card.getAttribute('data-ig')    || '',
+        featured:  card.getAttribute('data-featured') === '1'
+      });
     });
     return arr;
   }
+
+  // ── Edit modal ────────────────────────────────────
+  var _editingCard = null;
+
+  window.openEditModal = function (card) {
+    _editingCard = card;
+    // Populate model dropdown
+    var sel = document.getElementById('edit-model-select');
+    sel.innerHTML = '<option value="">— No model —</option>';
+    models.forEach(function (m) {
+      var opt = document.createElement('option');
+      opt.value = m.slug;
+      opt.textContent = m.name;
+      if (m.slug === card.getAttribute('data-model')) opt.selected = true;
+      sel.appendChild(opt);
+    });
+    document.getElementById('edit-featured').checked = card.getAttribute('data-featured') === '1';
+    document.getElementById('edit-ig').value = card.getAttribute('data-ig') || '';
+    document.getElementById('edit-modal').classList.add('active');
+    sel.focus();
+  };
+
+  window.closeEditModal = function () {
+    document.getElementById('edit-modal').classList.remove('active');
+    _editingCard = null;
+  };
+
+  window.saveEditModal = function () {
+    if (!_editingCard) return;
+    var modelSlug = document.getElementById('edit-model-select').value;
+    var featured  = document.getElementById('edit-featured').checked;
+    var ig        = document.getElementById('edit-ig').value.trim();
+
+    // If marking as featured, unmark all other cards with same model
+    if (featured && modelSlug) {
+      document.querySelectorAll('#photo-grid .photo-card').forEach(function (c) {
+        if (c !== _editingCard && c.getAttribute('data-model') === modelSlug) {
+          c.setAttribute('data-featured', '');
+          var badge = c.querySelector('.main-badge');
+          if (badge) badge.classList.remove('visible');
+        }
+      });
+    }
+
+    _editingCard.setAttribute('data-model',    modelSlug);
+    _editingCard.setAttribute('data-ig',        ig);
+    _editingCard.setAttribute('data-featured',  featured ? '1' : '');
+
+    // Update badges
+    var mainBadge = _editingCard.querySelector('.main-badge');
+    if (mainBadge) { mainBadge.classList.toggle('visible', featured); }
+
+    // Update meta badge
+    var spans = _editingCard.querySelectorAll('.photo-meta span');
+    var modelObj = models.filter(function(m) { return m.slug === modelSlug; })[0];
+    if (spans[0]) spans[0].textContent = modelObj ? modelObj.name : modelSlug;
+    if (spans[1]) {
+      if (ig) {
+        var igm = ig.match(/instagram\.com\/([^/?#]+)/);
+        spans[1].textContent = igm ? '@' + igm[1] : '';
+      } else { spans[1].textContent = ''; }
+    }
+
+    closeEditModal();
+    photos = getPhotosFromDOM();
+    savePhotosJson(photos, function () { toast('Photo info saved.'); });
+  };
+
+  // Close modal on backdrop click
+  document.getElementById('edit-modal').addEventListener('click', function (e) {
+    if (e.target === this) closeEditModal();
+  });
+
+  // Close on Escape
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') closeEditModal();
+  });
 
   function removePhoto(card) {
     if (!confirm('Remove this photo from the gallery?\n(The image file is kept in the repo.)')) return;
@@ -582,7 +814,7 @@
               body: JSON.stringify(body)
             }).then(function (r) {
               if (!r.ok) return r.text().then(function (t) { throw new Error(t); });
-              newEntries.push({ src: repoPath, alt: filename.replace(/\.[^.]+$/, '').replace(/[-_]/g, ' ') });
+              newEntries.push({ src: repoPath, alt: filename.replace(/\.[^.]+$/, '').replace(/[-_]/g, ' '), model: '', instagram: '' });
               idx++;
               next();
             }).catch(function (err) {
@@ -739,6 +971,96 @@
     site.footer.links = links;
     saveSiteJson(function () { toast('Footer links saved.'); });
   };
+
+  // ══════════════════════════════════════════════
+  // MODELS SECTION
+  // ══════════════════════════════════════════════
+
+  function populateModels() {
+    var container = document.getElementById('models-list');
+    container.innerHTML = '';
+    models.forEach(function (model) { addModelRow(model); });
+  }
+
+  window.addModelRow = function (model) {
+    model = model || { name: '', slug: '', instagram: '' };
+    var container = document.getElementById('models-list');
+    var row = document.createElement('div');
+    row.className = 'model-row';
+
+    var nameInput = document.createElement('input');
+    nameInput.type        = 'text';
+    nameInput.className   = 'field';
+    nameInput.placeholder = 'Model name (e.g. Sarah K.)';
+    nameInput.value       = model.name || '';
+
+    var igInput = document.createElement('input');
+    igInput.type        = 'text';
+    igInput.className   = 'field';
+    igInput.placeholder = 'Instagram URL';
+    igInput.value       = model.instagram || '';
+
+    var slugPreview = document.createElement('span');
+    slugPreview.className   = 'slug-preview';
+    slugPreview.textContent = model.slug ? '/' + model.slug : '';
+
+    nameInput.addEventListener('input', function () {
+      var slug = nameInput.value.toLowerCase()
+        .replace(/[^a-z0-9\s-]/g, '')
+        .trim().replace(/\s+/g, '-');
+      slugPreview.textContent = slug ? '/' + slug : '';
+      row._slug = slug;
+    });
+    row._slug = model.slug || '';
+
+    var del = document.createElement('button');
+    del.className   = 'btn danger outline small';
+    del.textContent = '\u00d7';
+    del.title       = 'Delete model';
+    del.onclick     = function () {
+      if (confirm('Delete this model? Photos assigned to them will become unassigned.')) {
+        row.remove();
+      }
+    };
+
+    row.appendChild(nameInput);
+    row.appendChild(igInput);
+    row.appendChild(slugPreview);
+    row.appendChild(del);
+    container.appendChild(row);
+  };
+
+  window.saveModelsData = function () {
+    var rows = document.querySelectorAll('#models-list .model-row');
+    var list = [];
+    rows.forEach(function (row) {
+      var inputs = row.querySelectorAll('input');
+      var name   = inputs[0].value.trim();
+      var ig     = inputs[1].value.trim();
+      var slug   = row._slug || name.toLowerCase().replace(/[^a-z0-9\s-]/g, '').trim().replace(/\s+/g, '-');
+      if (name && slug) list.push({ name: name, slug: slug, instagram: ig });
+    });
+    models = list;
+    saveModelsJson(function () { toast('Models saved.'); });
+  };
+
+  function saveModelsJson(onDone) {
+    var b64 = toBase64(JSON.stringify({ models: models }, null, 2));
+    getToken().then(function (tok) {
+      getSHA('data/models.json', tok, function (sha) {
+        var body = { message: 'Update models', content: b64 };
+        if (sha) body.sha = sha;
+        fetch('/.netlify/git/github/contents/data/models.json', {
+          method: 'PUT',
+          headers: { 'Authorization': 'Bearer ' + tok, 'Content-Type': 'application/json' },
+          body: JSON.stringify(body)
+        }).then(function (r) {
+          if (!r.ok) return r.text().then(function (t) { throw new Error(t); });
+          onDone();
+        }).catch(function (err) { toast('Save failed: ' + err.message); });
+      });
+    });
+  }
 
   // ══════════════════════════════════════════════
   // GITHUB API HELPERS

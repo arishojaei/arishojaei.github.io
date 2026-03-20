@@ -2,7 +2,15 @@
   "permissions": {
     "allow": [
       "Bash(git config:*)",
-      "Bash(python3 -:*)"
+      "Bash(python3 -:*)",
+      "Bash(ffmpeg -i \"/Users/ari/Desktop/Screen Recording 2026-03-20 at 18.31.48.mov\" -ss 00:00:01 -vframes 1 /tmp/frame1.png -y)",
+      "Bash(ffmpeg -i \"/Users/ari/Desktop/Screen Recording 2026-03-20 at 18.31.48.mov\" -ss 00:00:03 -vframes 1 /tmp/frame2.png -y)",
+      "Bash(brew install:*)",
+      "Bash(/opt/homebrew/bin/ffmpeg -i \"/Users/ari/Desktop/Screen Recording 2026-03-20 at 18.31.48.mov\" -ss 00:00:01 -vframes 1 /tmp/frame1.png -y)",
+      "Bash(/opt/homebrew/bin/ffmpeg -i \"/Users/ari/Desktop/Screen Recording 2026-03-20 at 18.31.48.mov\" -ss 00:00:01 -vframes 1 -update 1 /tmp/frame1.png -y)",
+      "Bash(/opt/homebrew/bin/ffmpeg -i \"/Users/ari/Desktop/Screen Recording 2026-03-20 at 18.31.48.mov\" -ss 00:00:04 -vframes 1 -update 1 /tmp/frame2.png -y)",
+      "Bash(/opt/homebrew/bin/ffmpeg -i \"/Users/ari/Desktop/Screen Recording 2026-03-20 at 18.31.48.mov\" -ss 00:00:07 -vframes 1 -update 1 /tmp/frame3.png -y)",
+      "Bash(python3 -c \":*)"
     ]
   }
 }
