@@ -3,9 +3,9 @@
     {
       "src": "img/portfolio/ari-shojaei-c7qzn4bkcvk-unsplash-1-.jpg",
       "alt": "Pensive Black and White Portrait in Cologne",
-      "model": "",
+      "model": "mervilie",
       "instagram": "",
-      "featured": false
+      "featured": true
     },
     {
       "src": "img/portfolio/dsc3180.jpg",
@@ -417,7 +417,8 @@
       "src": "img/portfolio/dsc3269.jpg",
       "alt": "dsc3269",
       "model": "",
-      "instagram": ""
+      "instagram": "",
+      "featured": false
     }
   ]
 }
