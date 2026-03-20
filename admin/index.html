@@ -1,12 +1,482 @@
 <!doctype html>
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="robots" content="noindex, nofollow" />
-    <title>Admin — Ari Shojaei Photography</title>
-  </head>
-  <body>
-    <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
-  </body>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Admin — Ari Shojaei Photography</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Jost', system-ui, sans-serif;
+      background: #f0f0f0;
+      color: #111;
+      min-height: 100vh;
+    }
+
+    /* ── Login ───────────────────────────────────── */
+    #login-screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      gap: 16px;
+    }
+    #login-screen h1 { font-size: 1.1rem; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 500; }
+    #login-screen p  { font-size: 0.85rem; color: #666; }
+
+    /* ── Admin shell ─────────────────────────────── */
+    #admin-screen { display: none; }
+
+    header {
+      background: #fff;
+      border-bottom: 2px solid #111;
+      padding: 0 32px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    header h1 {
+      font-size: 0.85rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+    .header-right { display: flex; align-items: center; gap: 12px; }
+    #photo-count  { font-size: 0.8rem; color: #888; }
+
+    /* ── Buttons ─────────────────────────────────── */
+    .btn {
+      height: 36px;
+      padding: 0 18px;
+      font-family: inherit;
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      cursor: pointer;
+      border: 2px solid #111;
+      background: #111;
+      color: #fff;
+      transition: background 0.15s, color 0.15s;
+    }
+    .btn:hover   { background: #333; }
+    .btn.outline { background: transparent; color: #111; }
+    .btn.outline:hover { background: #111; color: #fff; }
+    .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+    /* ── Grid ────────────────────────────────────── */
+    .container { padding: 28px 32px; }
+
+    #photo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 10px;
+    }
+
+    .photo-card {
+      position: relative;
+      aspect-ratio: 2/3;
+      background: #ddd;
+      border: 2px solid #111;
+      overflow: hidden;
+    }
+    .photo-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .photo-card .overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0);
+      display: flex;
+      align-items: flex-end;
+      justify-content: flex-end;
+      padding: 8px;
+      transition: background 0.18s;
+    }
+    .photo-card:hover .overlay { background: rgba(0,0,0,0.35); }
+    .remove-btn {
+      width: 30px;
+      height: 30px;
+      background: #fff;
+      border: none;
+      cursor: pointer;
+      font-size: 1.1rem;
+      line-height: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.18s;
+      font-family: inherit;
+    }
+    .photo-card:hover .remove-btn { opacity: 1; }
+
+    /* ── Empty state ─────────────────────────────── */
+    #empty-state {
+      display: none;
+      text-align: center;
+      padding: 80px 0;
+      color: #888;
+      font-size: 0.9rem;
+    }
+
+    /* ── Upload overlay ──────────────────────────── */
+    #upload-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+    }
+    #upload-overlay.active { display: flex; }
+    .upload-box {
+      background: #fff;
+      border: 2px solid #111;
+      padding: 40px 48px;
+      text-align: center;
+      min-width: 320px;
+    }
+    .upload-box strong { font-size: 1rem; font-weight: 600; display: block; margin-bottom: 8px; }
+    .upload-box p { font-size: 0.82rem; color: #666; min-height: 18px; }
+    .progress-bar {
+      width: 100%;
+      height: 3px;
+      background: #e0e0e0;
+      margin-top: 20px;
+    }
+    .progress-fill {
+      height: 100%;
+      background: #111;
+      width: 0%;
+      transition: width 0.25s ease;
+    }
+
+    /* ── Toast ───────────────────────────────────── */
+    #toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #111;
+      color: #fff;
+      padding: 12px 20px;
+      font-size: 0.82rem;
+      display: none;
+      z-index: 200;
+      border: 2px solid #111;
+    }
+
+    #file-input { display: none; }
+  </style>
+</head>
+<body>
+
+<!-- ── Login Screen ───────────────────────────────── -->
+<div id="login-screen">
+  <h1>Ari Shojaei Photography</h1>
+  <p>Admin access only</p>
+  <button class="btn" style="margin-top:8px" onclick="netlifyIdentity.open()">Log in</button>
+</div>
+
+<!-- ── Admin Screen ───────────────────────────────── -->
+<div id="admin-screen">
+  <header>
+    <h1>Photo Gallery</h1>
+    <div class="header-right">
+      <span id="photo-count"></span>
+      <button class="btn" id="add-btn" onclick="document.getElementById('file-input').click()">+ Add Photos</button>
+      <button class="btn outline" onclick="netlifyIdentity.logout()">Log out</button>
+    </div>
+  </header>
+
+  <div class="container">
+    <div id="photo-grid"></div>
+    <div id="empty-state">No photos yet. Click "Add Photos" to upload your first one.</div>
+  </div>
+</div>
+
+<!-- ── Upload Overlay ─────────────────────────────── -->
+<div id="upload-overlay">
+  <div class="upload-box">
+    <strong id="upload-status">Uploading…</strong>
+    <p id="upload-detail"></p>
+    <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+  </div>
+</div>
+
+<!-- ── Toast ──────────────────────────────────────── -->
+<div id="toast"></div>
+
+<input type="file" id="file-input" accept="image/*" multiple>
+
+<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  var photos = [];
+
+  // ── Auth ────────────────────────────────────────
+  netlifyIdentity.on('init', function (user) { if (user) showAdmin(); });
+  netlifyIdentity.on('login', function () { netlifyIdentity.close(); showAdmin(); });
+  netlifyIdentity.on('logout', function () {
+    document.getElementById('admin-screen').style.display = 'none';
+    document.getElementById('login-screen').style.display = 'flex';
+  });
+
+  function showAdmin() {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('admin-screen').style.display = 'block';
+    loadPhotos();
+  }
+
+  function getToken() {
+    return netlifyIdentity.currentUser().jwt();
+  }
+
+  // ── Load & render ────────────────────────────────
+  function loadPhotos() {
+    fetch('/data/photos.json?t=' + Date.now())
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        photos = data.photos || [];
+        renderGrid();
+      })
+      .catch(function () { toast('Could not load photos.json'); });
+  }
+
+  function renderGrid() {
+    var grid   = document.getElementById('photo-grid');
+    var empty  = document.getElementById('empty-state');
+    var count  = document.getElementById('photo-count');
+
+    count.textContent = photos.length + ' photo' + (photos.length !== 1 ? 's' : '');
+
+    if (!photos.length) {
+      grid.innerHTML = '';
+      empty.style.display = 'block';
+      return;
+    }
+    empty.style.display = 'none';
+
+    var frag = document.createDocumentFragment();
+    photos.forEach(function (photo, i) {
+      var card = document.createElement('div');
+      card.className = 'photo-card';
+
+      var img = document.createElement('img');
+      img.src = '/' + photo.src;
+      img.alt = photo.alt;
+      img.loading = 'lazy';
+
+      var overlay = document.createElement('div');
+      overlay.className = 'overlay';
+
+      var btn = document.createElement('button');
+      btn.className = 'remove-btn';
+      btn.title = 'Remove from gallery';
+      btn.innerHTML = '&times;';
+      btn.setAttribute('data-index', i);
+      btn.addEventListener('click', function () {
+        removePhoto(parseInt(this.getAttribute('data-index'), 10));
+      });
+
+      overlay.appendChild(btn);
+      card.appendChild(img);
+      card.appendChild(overlay);
+      frag.appendChild(card);
+    });
+
+    grid.innerHTML = '';
+    grid.appendChild(frag);
+  }
+
+  // ── File upload ───────────────────────────────────
+  document.getElementById('file-input').addEventListener('change', function (e) {
+    var files = Array.from(e.target.files);
+    e.target.value = '';
+    if (files.length) uploadFiles(files);
+  });
+
+  function uploadFiles(files) {
+    var overlay  = document.getElementById('upload-overlay');
+    var status   = document.getElementById('upload-status');
+    var detail   = document.getElementById('upload-detail');
+    var fill     = document.getElementById('progress-fill');
+    var addBtn   = document.getElementById('add-btn');
+
+    overlay.classList.add('active');
+    addBtn.disabled = true;
+    fill.style.width = '0%';
+
+    var newEntries = [];
+    var idx = 0;
+
+    function uploadNext() {
+      if (idx >= files.length) {
+        // All images uploaded — update photos.json
+        status.textContent = 'Saving gallery…';
+        detail.textContent = '';
+        fill.style.width = '90%';
+
+        var merged = photos.concat(newEntries);
+        savePhotosJson(merged, function () {
+          photos = merged;
+          fill.style.width = '100%';
+          status.textContent = 'Done!';
+          detail.textContent = newEntries.length + ' photo' + (newEntries.length !== 1 ? 's' : '') + ' added.';
+          setTimeout(function () {
+            overlay.classList.remove('active');
+            addBtn.disabled = false;
+            renderGrid();
+            toast(newEntries.length + ' photo' + (newEntries.length !== 1 ? 's' : '') + ' published.');
+          }, 1000);
+        });
+        return;
+      }
+
+      var file = files[idx];
+      var pct  = Math.round((idx / files.length) * 88);
+      fill.style.width = pct + '%';
+      status.textContent = 'Uploading ' + (idx + 1) + ' of ' + files.length + '\u2026';
+      detail.textContent = file.name;
+
+      readAsBase64(file, function (b64) {
+        var filename = sanitiseFilename(file.name);
+        var repoPath = 'img/portfolio/' + filename;
+
+        getToken().then(function (tok) {
+          // Check if the file already exists (need its SHA to overwrite)
+          getSHA(repoPath, tok, function (existingSHA) {
+            var body = {
+              message: 'Add photo: ' + filename,
+              content: b64
+            };
+            if (existingSHA) body.sha = existingSHA;
+
+            fetch('/.netlify/git/github/contents/' + repoPath, {
+              method: 'PUT',
+              headers: {
+                'Authorization': 'Bearer ' + tok,
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(body)
+            })
+            .then(function (r) {
+              if (!r.ok) return r.text().then(function (t) { throw new Error(t); });
+              // Use filename (without extension) as alt text default
+              var altText = filename.replace(/\.[^.]+$/, '').replace(/[-_]/g, ' ');
+              newEntries.push({ src: repoPath, alt: altText });
+              idx++;
+              uploadNext();
+            })
+            .catch(function (err) {
+              overlay.classList.remove('active');
+              addBtn.disabled = false;
+              toast('Upload failed: ' + err.message);
+              console.error(err);
+            });
+          });
+        });
+      });
+    }
+
+    uploadNext();
+  }
+
+  function readAsBase64(file, cb) {
+    var reader = new FileReader();
+    reader.onload = function (e) {
+      cb(e.target.result.split(',')[1]);
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function sanitiseFilename(name) {
+    return name
+      .toLowerCase()
+      .replace(/\s+/g, '-')
+      .replace(/[^a-z0-9.\-_]/g, '');
+  }
+
+  function getSHA(path, tok, cb) {
+    fetch('/.netlify/git/github/contents/' + path, {
+      headers: { 'Authorization': 'Bearer ' + tok }
+    })
+    .then(function (r) {
+      if (r.status === 404) { cb(null); return; }
+      return r.json().then(function (d) { cb(d.sha || null); });
+    })
+    .catch(function () { cb(null); });
+  }
+
+  // ── Save photos.json ──────────────────────────────
+  function savePhotosJson(list, onDone) {
+    var content = JSON.stringify({ photos: list }, null, 2);
+    // btoa with UTF-8 support
+    var b64 = btoa(unescape(encodeURIComponent(content)));
+
+    getToken().then(function (tok) {
+      getSHA('data/photos.json', tok, function (sha) {
+        var body = {
+          message: 'Update gallery (' + list.length + ' photos)',
+          content: b64
+        };
+        if (sha) body.sha = sha;
+
+        fetch('/.netlify/git/github/contents/data/photos.json', {
+          method: 'PUT',
+          headers: {
+            'Authorization': 'Bearer ' + tok,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(body)
+        })
+        .then(function (r) {
+          if (!r.ok) return r.text().then(function (t) { throw new Error(t); });
+          onDone();
+        })
+        .catch(function (err) {
+          toast('Failed to save gallery: ' + err.message);
+          console.error(err);
+        });
+      });
+    });
+  }
+
+  // ── Remove photo ──────────────────────────────────
+  function removePhoto(index) {
+    if (!confirm('Remove this photo from the gallery?\n(The image file is kept in the repo.)')) return;
+    var updated = photos.filter(function (_, i) { return i !== index; });
+    savePhotosJson(updated, function () {
+      photos = updated;
+      renderGrid();
+      toast('Photo removed from gallery.');
+    });
+  }
+
+  // ── Toast helper ──────────────────────────────────
+  function toast(msg) {
+    var el = document.getElementById('toast');
+    el.textContent = msg;
+    el.style.display = 'block';
+    clearTimeout(toast._t);
+    toast._t = setTimeout(function () { el.style.display = 'none'; }, 3000);
+  }
+})();
+</script>
+</body>
 </html>
