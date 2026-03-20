@@ -15,6 +15,7 @@
       background: #f0f0f0;
       color: #111;
       min-height: 100vh;
+      font-size: 14px;
     }
 
     /* ── Login ───────────────────────────────────── */
@@ -24,41 +25,103 @@
       align-items: center;
       justify-content: center;
       min-height: 100vh;
-      gap: 16px;
+      gap: 12px;
     }
-    #login-screen h1 { font-size: 1.1rem; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 500; }
-    #login-screen p  { font-size: 0.85rem; color: #666; }
+    #login-screen h1 { font-size: 1rem; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 500; }
+    #login-screen p  { font-size: 0.82rem; color: #888; }
 
-    /* ── Admin shell ─────────────────────────────── */
-    #admin-screen { display: none; }
+    /* ── App shell ───────────────────────────────── */
+    #admin-screen { display: none; height: 100vh; flex-direction: column; }
 
-    header {
+    .topbar {
       background: #fff;
       border-bottom: 2px solid #111;
-      padding: 0 32px;
-      height: 60px;
+      height: 52px;
+      padding: 0 24px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      position: sticky;
-      top: 0;
+      flex-shrink: 0;
       z-index: 10;
     }
-    header h1 {
-      font-size: 0.85rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      font-weight: 600;
+    .topbar h1 { font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 600; }
+
+    .app-body {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
     }
-    .header-right { display: flex; align-items: center; gap: 12px; }
-    #photo-count  { font-size: 0.8rem; color: #888; }
+
+    /* ── Sidebar ─────────────────────────────────── */
+    .sidebar {
+      width: 180px;
+      background: #fff;
+      border-right: 2px solid #111;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      padding: 16px 0;
+      overflow-y: auto;
+    }
+
+    .nav-btn {
+      display: block;
+      width: 100%;
+      padding: 12px 20px;
+      text-align: left;
+      background: none;
+      border: none;
+      border-left: 3px solid transparent;
+      font-family: inherit;
+      font-size: 0.82rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #888;
+      cursor: pointer;
+      transition: color 0.15s, border-color 0.15s, background 0.15s;
+    }
+    .nav-btn:hover       { color: #111; background: #f5f5f5; }
+    .nav-btn.active      { color: #111; border-left-color: #111; background: #f5f5f5; }
+
+    .nav-divider {
+      height: 1px;
+      background: #e8e8e8;
+      margin: 8px 0;
+    }
+
+    /* ── Content area ────────────────────────────── */
+    .content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 28px 32px;
+    }
+
+    section { display: none; }
+    section.active { display: block; }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .section-header h2 {
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .section-actions { display: flex; gap: 10px; align-items: center; }
+
+    .hint { font-size: 0.78rem; color: #999; margin-bottom: 20px; }
 
     /* ── Buttons ─────────────────────────────────── */
     .btn {
-      height: 36px;
-      padding: 0 18px;
+      height: 34px;
+      padding: 0 16px;
       font-family: inherit;
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       font-weight: 500;
       letter-spacing: 0.05em;
       text-transform: uppercase;
@@ -66,19 +129,23 @@
       border: 2px solid #111;
       background: #111;
       color: #fff;
-      transition: background 0.15s, color 0.15s;
+      transition: background 0.15s;
+      white-space: nowrap;
     }
-    .btn:hover   { background: #333; }
-    .btn.outline { background: transparent; color: #111; }
-    .btn.outline:hover { background: #111; color: #fff; }
-    .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+    .btn:hover            { background: #333; }
+    .btn.outline          { background: transparent; color: #111; }
+    .btn.outline:hover    { background: #111; color: #fff; }
+    .btn:disabled         { opacity: 0.4; cursor: not-allowed; }
+    .btn.small            { height: 28px; padding: 0 12px; font-size: 0.72rem; }
+    .btn.danger           { border-color: #c00; background: #c00; color: #fff; }
+    .btn.danger:hover     { background: #a00; }
+    .btn.danger.outline   { background: transparent; color: #c00; }
+    .btn.danger.outline:hover { background: #c00; color: #fff; }
 
-    /* ── Grid ────────────────────────────────────── */
-    .container { padding: 28px 32px; }
-
+    /* ── Photo grid ──────────────────────────────── */
     #photo-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
       gap: 10px;
     }
 
@@ -88,12 +155,15 @@
       background: #ddd;
       border: 2px solid #111;
       overflow: hidden;
+      cursor: grab;
     }
+    .photo-card:active { cursor: grabbing; }
     .photo-card img {
       width: 100%;
       height: 100%;
       object-fit: cover;
       display: block;
+      pointer-events: none;
     }
     .photo-card .overlay {
       position: absolute;
@@ -102,113 +172,201 @@
       display: flex;
       align-items: flex-end;
       justify-content: flex-end;
-      padding: 8px;
+      padding: 6px;
       transition: background 0.18s;
     }
     .photo-card:hover .overlay { background: rgba(0,0,0,0.35); }
     .remove-btn {
-      width: 30px;
-      height: 30px;
+      width: 28px; height: 28px;
       background: #fff;
       border: none;
       cursor: pointer;
-      font-size: 1.1rem;
-      line-height: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      opacity: 0;
-      transition: opacity 0.18s;
-      font-family: inherit;
+      font-size: 1rem;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; transition: opacity 0.18s;
     }
     .photo-card:hover .remove-btn { opacity: 1; }
 
+    /* SortableJS drag ghost */
+    .sortable-ghost { opacity: 0.35; }
+    .sortable-drag  { opacity: 0; }
+
     /* ── Empty state ─────────────────────────────── */
     #empty-state {
-      display: none;
-      text-align: center;
-      padding: 80px 0;
-      color: #888;
-      font-size: 0.9rem;
+      display: none; text-align: center;
+      padding: 60px 0; color: #999; font-size: 0.85rem;
     }
+
+    /* ── Forms ───────────────────────────────────── */
+    .form-group { margin-bottom: 20px; max-width: 560px; }
+    .form-group label {
+      display: block; margin-bottom: 6px;
+      font-size: 0.75rem; font-weight: 600;
+      letter-spacing: 0.08em; text-transform: uppercase; color: #555;
+    }
+    .field {
+      width: 100%;
+      padding: 9px 12px;
+      border: 2px solid #ccc;
+      font-family: inherit;
+      font-size: 0.88rem;
+      background: #fff;
+      color: #111;
+      outline: none;
+      transition: border-color 0.15s;
+      resize: vertical;
+    }
+    .field:focus { border-color: #111; }
+
+    /* ── About photo preview ─────────────────────── */
+    .about-photo-wrap {
+      display: flex; align-items: flex-end; gap: 16px; margin-bottom: 20px;
+    }
+    .about-photo-wrap img {
+      width: 100px; height: 140px;
+      object-fit: cover;
+      border: 2px solid #111;
+    }
+
+    /* ── Footer links editor ─────────────────────── */
+    #footer-links-list { max-width: 620px; margin-bottom: 16px; }
+    .link-row {
+      display: flex; gap: 8px; align-items: center; margin-bottom: 8px;
+    }
+    .link-row .field { flex: 1; }
+    .link-row .field.label-field { flex: 0 0 130px; }
 
     /* ── Upload overlay ──────────────────────────── */
     #upload-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.55);
-      z-index: 100;
-      align-items: center;
-      justify-content: center;
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.55); z-index: 100;
+      align-items: center; justify-content: center;
     }
     #upload-overlay.active { display: flex; }
     .upload-box {
-      background: #fff;
-      border: 2px solid #111;
-      padding: 40px 48px;
-      text-align: center;
-      min-width: 320px;
+      background: #fff; border: 2px solid #111;
+      padding: 40px 48px; text-align: center; min-width: 300px;
     }
-    .upload-box strong { font-size: 1rem; font-weight: 600; display: block; margin-bottom: 8px; }
-    .upload-box p { font-size: 0.82rem; color: #666; min-height: 18px; }
-    .progress-bar {
-      width: 100%;
-      height: 3px;
-      background: #e0e0e0;
-      margin-top: 20px;
-    }
-    .progress-fill {
-      height: 100%;
-      background: #111;
-      width: 0%;
-      transition: width 0.25s ease;
-    }
+    .upload-box strong { font-size: 0.95rem; font-weight: 600; display: block; margin-bottom: 8px; }
+    .upload-box p { font-size: 0.8rem; color: #777; min-height: 18px; }
+    .progress-bar { width: 100%; height: 3px; background: #e0e0e0; margin-top: 18px; }
+    .progress-fill { height: 100%; background: #111; width: 0%; transition: width 0.25s ease; }
 
     /* ── Toast ───────────────────────────────────── */
     #toast {
-      position: fixed;
-      bottom: 24px;
-      right: 24px;
-      background: #111;
-      color: #fff;
-      padding: 12px 20px;
-      font-size: 0.82rem;
-      display: none;
-      z-index: 200;
-      border: 2px solid #111;
+      position: fixed; bottom: 20px; right: 20px;
+      background: #111; color: #fff;
+      padding: 10px 18px; font-size: 0.8rem;
+      display: none; z-index: 200;
     }
 
-    #file-input { display: none; }
+    #photo-count { font-size: 0.78rem; color: #999; font-weight: 400; }
   </style>
 </head>
 <body>
 
-<!-- ── Login Screen ───────────────────────────────── -->
+<!-- ── Login ──────────────────────────────────────── -->
 <div id="login-screen">
   <h1>Ari Shojaei Photography</h1>
   <p>Admin access only</p>
   <button class="btn" style="margin-top:8px" onclick="netlifyIdentity.open()">Log in</button>
 </div>
 
-<!-- ── Admin Screen ───────────────────────────────── -->
+<!-- ── Admin shell ────────────────────────────────── -->
 <div id="admin-screen">
-  <header>
-    <h1>Photo Gallery</h1>
-    <div class="header-right">
-      <span id="photo-count"></span>
-      <button class="btn" id="add-btn" onclick="document.getElementById('file-input').click()">+ Add Photos</button>
-      <button class="btn outline" onclick="netlifyIdentity.logout()">Log out</button>
-    </div>
+
+  <header class="topbar">
+    <h1>Admin Panel</h1>
+    <button class="btn outline small" onclick="netlifyIdentity.logout()">Log out</button>
   </header>
 
-  <div class="container">
-    <div id="photo-grid"></div>
-    <div id="empty-state">No photos yet. Click "Add Photos" to upload your first one.</div>
+  <div class="app-body">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <button class="nav-btn active" data-section="photos"  onclick="switchSection('photos')">Photos</button>
+      <div class="nav-divider"></div>
+      <button class="nav-btn"        data-section="header"  onclick="switchSection('header')">Header</button>
+      <button class="nav-btn"        data-section="about"   onclick="switchSection('about')">About</button>
+      <button class="nav-btn"        data-section="footer"  onclick="switchSection('footer')">Footer Links</button>
+    </aside>
+
+    <!-- Content -->
+    <main class="content">
+
+      <!-- ── Photos ── -->
+      <section id="section-photos" class="active">
+        <div class="section-header">
+          <h2>Photos <span id="photo-count"></span></h2>
+          <div class="section-actions">
+            <button class="btn outline" id="save-order-btn" onclick="savePhotosData()" disabled>Save Order</button>
+            <button class="btn" id="add-photos-btn" onclick="document.getElementById('file-input').click()">+ Add Photos</button>
+          </div>
+        </div>
+        <p class="hint">Drag photos to reorder — same order appears on your homepage. Hover a photo to remove it.</p>
+        <div id="photo-grid"></div>
+        <div id="empty-state">No photos yet. Click "Add Photos" to get started.</div>
+      </section>
+
+      <!-- ── Header ── -->
+      <section id="section-header">
+        <div class="section-header">
+          <h2>Header</h2>
+        </div>
+        <div class="form-group">
+          <label>Title</label>
+          <input type="text" id="header-title" class="field" placeholder="Portrait photographer, Köln">
+        </div>
+        <div class="form-group">
+          <label>Subtitle</label>
+          <textarea id="header-subtitle" class="field" rows="3" placeholder="Professional headshots, Personal portraits…"></textarea>
+        </div>
+        <button class="btn" onclick="saveHeaderData()">Save Changes</button>
+      </section>
+
+      <!-- ── About ── -->
+      <section id="section-about">
+        <div class="section-header">
+          <h2>About Page</h2>
+        </div>
+        <div class="form-group">
+          <label>Profile Photo</label>
+          <div class="about-photo-wrap">
+            <img id="about-photo-preview" src="" alt="Profile photo">
+            <div>
+              <button class="btn outline small" onclick="document.getElementById('about-photo-input').click()">Change Photo</button>
+              <p style="margin-top:6px; font-size:0.75rem; color:#999;">Uploads to img/me.jpg</p>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Name</label>
+          <input type="text" id="about-name-field" class="field" placeholder="Ari Shojaei">
+        </div>
+        <div class="form-group">
+          <label>Bio</label>
+          <textarea id="about-bio-field" class="field" rows="6" placeholder="Write your bio here…"></textarea>
+        </div>
+        <button class="btn" onclick="saveAboutData()">Save Changes</button>
+        <input type="file" id="about-photo-input" accept="image/*" style="display:none">
+      </section>
+
+      <!-- ── Footer ── -->
+      <section id="section-footer">
+        <div class="section-header">
+          <h2>Footer Links</h2>
+          <button class="btn" onclick="saveFooterData()">Save Changes</button>
+        </div>
+        <p class="hint">These links appear in the footer of every page.</p>
+        <div id="footer-links-list"></div>
+        <button class="btn outline" onclick="addFooterLinkRow()">+ Add Link</button>
+      </section>
+
+    </main>
   </div>
 </div>
 
-<!-- ── Upload Overlay ─────────────────────────────── -->
+<!-- ── Upload overlay ─────────────────────────────── -->
 <div id="upload-overlay">
   <div class="upload-box">
     <strong id="upload-status">Uploading…</strong>
@@ -220,66 +378,87 @@
 <!-- ── Toast ──────────────────────────────────────── -->
 <div id="toast"></div>
 
-<input type="file" id="file-input" accept="image/*" multiple>
+<!-- Hidden file inputs -->
+<input type="file" id="file-input" accept="image/*" multiple style="display:none">
 
 <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 <script>
 (function () {
   'use strict';
 
+  // ── State ──────────────────────────────────────
   var photos = [];
+  var site   = { header: {}, about: {}, footer: { links: [] } };
+  var sortable = null;
 
-  // ── Auth ────────────────────────────────────────
-  netlifyIdentity.on('init', function (user) { if (user) showAdmin(); });
-  netlifyIdentity.on('login', function () { netlifyIdentity.close(); showAdmin(); });
-  netlifyIdentity.on('logout', function () {
+  // ── Auth ───────────────────────────────────────
+  netlifyIdentity.on('init',   function (u) { if (u) showAdmin(); });
+  netlifyIdentity.on('login',  function ()  { netlifyIdentity.close(); showAdmin(); });
+  netlifyIdentity.on('logout', function ()  {
     document.getElementById('admin-screen').style.display = 'none';
     document.getElementById('login-screen').style.display = 'flex';
   });
 
   function showAdmin() {
-    document.getElementById('login-screen').style.display = 'none';
-    document.getElementById('admin-screen').style.display = 'block';
-    loadPhotos();
+    document.getElementById('login-screen').style.display  = 'none';
+    document.getElementById('admin-screen').style.display  = 'flex';
+    loadAll();
   }
 
-  function getToken() {
-    return netlifyIdentity.currentUser().jwt();
+  function getToken() { return netlifyIdentity.currentUser().jwt(); }
+
+  // ── Load all data ──────────────────────────────
+  function loadAll() {
+    Promise.all([
+      fetch('/data/photos.json?t=' + Date.now()).then(function (r) { return r.json(); }),
+      fetch('/data/site.json?t='   + Date.now()).then(function (r) { return r.json(); })
+    ]).then(function (results) {
+      photos = results[0].photos || [];
+      site   = results[1];
+      renderPhotos();
+      populateHeader();
+      populateAbout();
+      populateFooter();
+    }).catch(function (err) { toast('Failed to load data: ' + err.message); });
   }
 
-  // ── Load & render ────────────────────────────────
-  function loadPhotos() {
-    fetch('/data/photos.json?t=' + Date.now())
-      .then(function (r) { return r.json(); })
-      .then(function (data) {
-        photos = data.photos || [];
-        renderGrid();
-      })
-      .catch(function () { toast('Could not load photos.json'); });
-  }
+  // ── Section switching ──────────────────────────
+  window.switchSection = function (name) {
+    document.querySelectorAll('section').forEach(function (s) { s.classList.remove('active'); });
+    document.querySelectorAll('.nav-btn').forEach(function (b) { b.classList.remove('active'); });
+    document.getElementById('section-' + name).classList.add('active');
+    document.querySelector('[data-section="' + name + '"]').classList.add('active');
+  };
 
-  function renderGrid() {
+  // ══════════════════════════════════════════════
+  // PHOTOS SECTION
+  // ══════════════════════════════════════════════
+
+  function renderPhotos() {
     var grid   = document.getElementById('photo-grid');
     var empty  = document.getElementById('empty-state');
     var count  = document.getElementById('photo-count');
+    var saveBtn = document.getElementById('save-order-btn');
 
-    count.textContent = photos.length + ' photo' + (photos.length !== 1 ? 's' : '');
+    count.textContent = '(' + photos.length + ')';
+    saveBtn.disabled = true;
 
     if (!photos.length) {
-      grid.innerHTML = '';
-      empty.style.display = 'block';
-      return;
+      grid.innerHTML = ''; empty.style.display = 'block'; return;
     }
     empty.style.display = 'none';
 
     var frag = document.createDocumentFragment();
     photos.forEach(function (photo, i) {
-      var card = document.createElement('div');
+      var card    = document.createElement('div');
       card.className = 'photo-card';
+      card.setAttribute('data-src', photo.src);
+      card.setAttribute('data-alt', photo.alt);
 
       var img = document.createElement('img');
-      img.src = '/' + photo.src;
-      img.alt = photo.alt;
+      img.src     = '/' + photo.src;
+      img.alt     = photo.alt;
       img.loading = 'lazy';
 
       var overlay = document.createElement('div');
@@ -287,11 +466,11 @@
 
       var btn = document.createElement('button');
       btn.className = 'remove-btn';
-      btn.title = 'Remove from gallery';
+      btn.title     = 'Remove from gallery';
       btn.innerHTML = '&times;';
-      btn.setAttribute('data-index', i);
-      btn.addEventListener('click', function () {
-        removePhoto(parseInt(this.getAttribute('data-index'), 10));
+      btn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        removePhoto(card);
       });
 
       overlay.appendChild(btn);
@@ -302,9 +481,47 @@
 
     grid.innerHTML = '';
     grid.appendChild(frag);
+    initSortable(grid);
   }
 
-  // ── File upload ───────────────────────────────────
+  function initSortable(grid) {
+    if (sortable) { sortable.destroy(); }
+    sortable = Sortable.create(grid, {
+      animation: 200,
+      ghostClass: 'sortable-ghost',
+      dragClass:  'sortable-drag',
+      onEnd: function () {
+        document.getElementById('save-order-btn').disabled = false;
+      }
+    });
+  }
+
+  function getPhotosFromDOM() {
+    var cards = document.querySelectorAll('#photo-grid .photo-card');
+    var arr = [];
+    cards.forEach(function (card) {
+      arr.push({ src: card.getAttribute('data-src'), alt: card.getAttribute('data-alt') });
+    });
+    return arr;
+  }
+
+  function removePhoto(card) {
+    if (!confirm('Remove this photo from the gallery?\n(The image file is kept in the repo.)')) return;
+    card.remove();
+    document.getElementById('photo-count').textContent = '(' + document.querySelectorAll('#photo-grid .photo-card').length + ')';
+    photos = getPhotosFromDOM();
+    savePhotosJson(photos, function () { toast('Photo removed.'); });
+  }
+
+  window.savePhotosData = function () {
+    photos = getPhotosFromDOM();
+    savePhotosJson(photos, function () {
+      document.getElementById('save-order-btn').disabled = true;
+      toast('Order saved.');
+    });
+  };
+
+  // ── File upload ──────────────────────────────
   document.getElementById('file-input').addEventListener('change', function (e) {
     var files = Array.from(e.target.files);
     e.target.value = '';
@@ -316,23 +533,22 @@
     var status   = document.getElementById('upload-status');
     var detail   = document.getElementById('upload-detail');
     var fill     = document.getElementById('progress-fill');
-    var addBtn   = document.getElementById('add-btn');
+    var addBtn   = document.getElementById('add-photos-btn');
 
     overlay.classList.add('active');
     addBtn.disabled = true;
     fill.style.width = '0%';
 
+    var currentPhotos = getPhotosFromDOM();
     var newEntries = [];
     var idx = 0;
 
-    function uploadNext() {
+    function next() {
       if (idx >= files.length) {
-        // All images uploaded — update photos.json
-        status.textContent = 'Saving gallery…';
-        detail.textContent = '';
-        fill.style.width = '90%';
-
-        var merged = photos.concat(newEntries);
+        status.textContent  = 'Saving gallery…';
+        detail.textContent  = '';
+        fill.style.width    = '90%';
+        var merged = currentPhotos.concat(newEntries);
         savePhotosJson(merged, function () {
           photos = merged;
           fill.style.width = '100%';
@@ -341,7 +557,7 @@
           setTimeout(function () {
             overlay.classList.remove('active');
             addBtn.disabled = false;
-            renderGrid();
+            renderPhotos();
             toast(newEntries.length + ' photo' + (newEntries.length !== 1 ? 's' : '') + ' published.');
           }, 1000);
         });
@@ -349,126 +565,244 @@
       }
 
       var file = files[idx];
-      var pct  = Math.round((idx / files.length) * 88);
-      fill.style.width = pct + '%';
+      fill.style.width = Math.round((idx / files.length) * 88) + '%';
       status.textContent = 'Uploading ' + (idx + 1) + ' of ' + files.length + '\u2026';
       detail.textContent = file.name;
 
       readAsBase64(file, function (b64) {
         var filename = sanitiseFilename(file.name);
         var repoPath = 'img/portfolio/' + filename;
-
         getToken().then(function (tok) {
-          // Check if the file already exists (need its SHA to overwrite)
-          getSHA(repoPath, tok, function (existingSHA) {
-            var body = {
-              message: 'Add photo: ' + filename,
-              content: b64
-            };
-            if (existingSHA) body.sha = existingSHA;
-
+          getSHA(repoPath, tok, function (sha) {
+            var body = { message: 'Add photo: ' + filename, content: b64 };
+            if (sha) body.sha = sha;
             fetch('/.netlify/git/github/contents/' + repoPath, {
               method: 'PUT',
-              headers: {
-                'Authorization': 'Bearer ' + tok,
-                'Content-Type': 'application/json'
-              },
+              headers: { 'Authorization': 'Bearer ' + tok, 'Content-Type': 'application/json' },
               body: JSON.stringify(body)
-            })
-            .then(function (r) {
+            }).then(function (r) {
               if (!r.ok) return r.text().then(function (t) { throw new Error(t); });
-              // Use filename (without extension) as alt text default
-              var altText = filename.replace(/\.[^.]+$/, '').replace(/[-_]/g, ' ');
-              newEntries.push({ src: repoPath, alt: altText });
+              newEntries.push({ src: repoPath, alt: filename.replace(/\.[^.]+$/, '').replace(/[-_]/g, ' ') });
               idx++;
-              uploadNext();
-            })
-            .catch(function (err) {
-              overlay.classList.remove('active');
-              addBtn.disabled = false;
+              next();
+            }).catch(function (err) {
+              overlay.classList.remove('active'); addBtn.disabled = false;
               toast('Upload failed: ' + err.message);
-              console.error(err);
             });
           });
         });
       });
     }
-
-    uploadNext();
+    next();
   }
 
-  function readAsBase64(file, cb) {
-    var reader = new FileReader();
-    reader.onload = function (e) {
-      cb(e.target.result.split(',')[1]);
+  // ══════════════════════════════════════════════
+  // HEADER SECTION
+  // ══════════════════════════════════════════════
+
+  function populateHeader() {
+    if (!site.header) return;
+    document.getElementById('header-title').value    = site.header.title    || '';
+    document.getElementById('header-subtitle').value = site.header.subtitle || '';
+  }
+
+  window.saveHeaderData = function () {
+    site.header = {
+      title:    document.getElementById('header-title').value.trim(),
+      subtitle: document.getElementById('header-subtitle').value.trim()
     };
-    reader.readAsDataURL(file);
+    saveSiteJson(function () { toast('Header saved.'); });
+  };
+
+  // ══════════════════════════════════════════════
+  // ABOUT SECTION
+  // ══════════════════════════════════════════════
+
+  function populateAbout() {
+    if (!site.about) return;
+    document.getElementById('about-name-field').value = site.about.name  || '';
+    document.getElementById('about-bio-field').value  = site.about.bio   || '';
+    var preview = document.getElementById('about-photo-preview');
+    if (preview && site.about.photo) preview.src = '/' + site.about.photo;
   }
 
-  function sanitiseFilename(name) {
-    return name
-      .toLowerCase()
-      .replace(/\s+/g, '-')
-      .replace(/[^a-z0-9.\-_]/g, '');
-  }
+  window.saveAboutData = function () {
+    site.about.name = document.getElementById('about-name-field').value.trim();
+    site.about.bio  = document.getElementById('about-bio-field').value.trim();
+    saveSiteJson(function () { toast('About page saved.'); });
+  };
 
-  function getSHA(path, tok, cb) {
-    fetch('/.netlify/git/github/contents/' + path, {
-      headers: { 'Authorization': 'Bearer ' + tok }
-    })
-    .then(function (r) {
-      if (r.status === 404) { cb(null); return; }
-      return r.json().then(function (d) { cb(d.sha || null); });
-    })
-    .catch(function () { cb(null); });
-  }
+  // Profile photo upload
+  document.getElementById('about-photo-input').addEventListener('change', function (e) {
+    var file = e.target.files[0];
+    e.target.value = '';
+    if (!file) return;
+    uploadProfilePhoto(file);
+  });
 
-  // ── Save photos.json ──────────────────────────────
-  function savePhotosJson(list, onDone) {
-    var content = JSON.stringify({ photos: list }, null, 2);
-    // btoa with UTF-8 support
-    var b64 = btoa(unescape(encodeURIComponent(content)));
+  function uploadProfilePhoto(file) {
+    var overlay = document.getElementById('upload-overlay');
+    var status  = document.getElementById('upload-status');
+    var detail  = document.getElementById('upload-detail');
+    var fill    = document.getElementById('progress-fill');
+    overlay.classList.add('active');
+    status.textContent = 'Uploading profile photo…';
+    detail.textContent = file.name;
+    fill.style.width   = '50%';
 
-    getToken().then(function (tok) {
-      getSHA('data/photos.json', tok, function (sha) {
-        var body = {
-          message: 'Update gallery (' + list.length + ' photos)',
-          content: b64
-        };
-        if (sha) body.sha = sha;
-
-        fetch('/.netlify/git/github/contents/data/photos.json', {
-          method: 'PUT',
-          headers: {
-            'Authorization': 'Bearer ' + tok,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(body)
-        })
-        .then(function (r) {
-          if (!r.ok) return r.text().then(function (t) { throw new Error(t); });
-          onDone();
-        })
-        .catch(function (err) {
-          toast('Failed to save gallery: ' + err.message);
-          console.error(err);
+    readAsBase64(file, function (b64) {
+      var repoPath = site.about.photo || 'img/me.jpg';
+      getToken().then(function (tok) {
+        getSHA(repoPath, tok, function (sha) {
+          var body = { message: 'Update profile photo', content: b64 };
+          if (sha) body.sha = sha;
+          fetch('/.netlify/git/github/contents/' + repoPath, {
+            method: 'PUT',
+            headers: { 'Authorization': 'Bearer ' + tok, 'Content-Type': 'application/json' },
+            body: JSON.stringify(body)
+          }).then(function (r) {
+            if (!r.ok) return r.text().then(function (t) { throw new Error(t); });
+            fill.style.width = '100%';
+            // Show local preview via object URL
+            var preview = document.getElementById('about-photo-preview');
+            if (preview) preview.src = URL.createObjectURL(file);
+            setTimeout(function () { overlay.classList.remove('active'); }, 600);
+            toast('Profile photo updated.');
+          }).catch(function (err) {
+            overlay.classList.remove('active');
+            toast('Upload failed: ' + err.message);
+          });
         });
       });
     });
   }
 
-  // ── Remove photo ──────────────────────────────────
-  function removePhoto(index) {
-    if (!confirm('Remove this photo from the gallery?\n(The image file is kept in the repo.)')) return;
-    var updated = photos.filter(function (_, i) { return i !== index; });
-    savePhotosJson(updated, function () {
-      photos = updated;
-      renderGrid();
-      toast('Photo removed from gallery.');
+  // ══════════════════════════════════════════════
+  // FOOTER SECTION
+  // ══════════════════════════════════════════════
+
+  function populateFooter() {
+    var container = document.getElementById('footer-links-list');
+    container.innerHTML = '';
+    var links = (site.footer && site.footer.links) ? site.footer.links : [];
+    links.forEach(function (link) { addFooterLinkRow(link); });
+  }
+
+  window.addFooterLinkRow = function (link) {
+    link = link || { label: '', url: '', aria: '' };
+    var container = document.getElementById('footer-links-list');
+    var row = document.createElement('div');
+    row.className = 'link-row';
+
+    var labelInput = document.createElement('input');
+    labelInput.type        = 'text';
+    labelInput.className   = 'field label-field';
+    labelInput.placeholder = 'Label (e.g. Instagram)';
+    labelInput.value       = link.label || '';
+
+    var urlInput = document.createElement('input');
+    urlInput.type        = 'text';
+    urlInput.className   = 'field';
+    urlInput.placeholder = 'https://…';
+    urlInput.value       = link.url || '';
+
+    var ariaInput = document.createElement('input');
+    ariaInput.type        = 'text';
+    ariaInput.className   = 'field';
+    ariaInput.placeholder = 'Aria label (accessibility)';
+    ariaInput.value       = link.aria || '';
+
+    var del = document.createElement('button');
+    del.className   = 'btn danger outline small';
+    del.textContent = '×';
+    del.title       = 'Remove link';
+    del.onclick     = function () { row.remove(); };
+
+    row.appendChild(labelInput);
+    row.appendChild(urlInput);
+    row.appendChild(ariaInput);
+    row.appendChild(del);
+    container.appendChild(row);
+  };
+
+  window.saveFooterData = function () {
+    var rows  = document.querySelectorAll('#footer-links-list .link-row');
+    var links = [];
+    rows.forEach(function (row) {
+      var inputs = row.querySelectorAll('input');
+      var label  = inputs[0].value.trim();
+      var url    = inputs[1].value.trim();
+      var aria   = inputs[2].value.trim();
+      if (label && url) links.push({ label: label, url: url, aria: aria });
+    });
+    if (!site.footer) site.footer = {};
+    site.footer.links = links;
+    saveSiteJson(function () { toast('Footer links saved.'); });
+  };
+
+  // ══════════════════════════════════════════════
+  // GITHUB API HELPERS
+  // ══════════════════════════════════════════════
+
+  function savePhotosJson(list, onDone) {
+    var b64 = toBase64(JSON.stringify({ photos: list }, null, 2));
+    getToken().then(function (tok) {
+      getSHA('data/photos.json', tok, function (sha) {
+        var body = { message: 'Update gallery (' + list.length + ' photos)', content: b64 };
+        if (sha) body.sha = sha;
+        fetch('/.netlify/git/github/contents/data/photos.json', {
+          method: 'PUT',
+          headers: { 'Authorization': 'Bearer ' + tok, 'Content-Type': 'application/json' },
+          body: JSON.stringify(body)
+        }).then(function (r) {
+          if (!r.ok) return r.text().then(function (t) { throw new Error(t); });
+          onDone();
+        }).catch(function (err) { toast('Save failed: ' + err.message); });
+      });
     });
   }
 
-  // ── Toast helper ──────────────────────────────────
+  function saveSiteJson(onDone) {
+    var b64 = toBase64(JSON.stringify(site, null, 2));
+    getToken().then(function (tok) {
+      getSHA('data/site.json', tok, function (sha) {
+        var body = { message: 'Update site content', content: b64 };
+        if (sha) body.sha = sha;
+        fetch('/.netlify/git/github/contents/data/site.json', {
+          method: 'PUT',
+          headers: { 'Authorization': 'Bearer ' + tok, 'Content-Type': 'application/json' },
+          body: JSON.stringify(body)
+        }).then(function (r) {
+          if (!r.ok) return r.text().then(function (t) { throw new Error(t); });
+          onDone();
+        }).catch(function (err) { toast('Save failed: ' + err.message); });
+      });
+    });
+  }
+
+  function getSHA(path, tok, cb) {
+    fetch('/.netlify/git/github/contents/' + path, {
+      headers: { 'Authorization': 'Bearer ' + tok }
+    }).then(function (r) {
+      if (r.status === 404) { cb(null); return; }
+      return r.json().then(function (d) { cb(d.sha || null); });
+    }).catch(function () { cb(null); });
+  }
+
+  function readAsBase64(file, cb) {
+    var reader = new FileReader();
+    reader.onload = function (e) { cb(e.target.result.split(',')[1]); };
+    reader.readAsDataURL(file);
+  }
+
+  function toBase64(str) {
+    return btoa(unescape(encodeURIComponent(str)));
+  }
+
+  function sanitiseFilename(name) {
+    return name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9.\-_]/g, '');
+  }
+
   function toast(msg) {
     var el = document.getElementById('toast');
     el.textContent = msg;
@@ -476,6 +810,7 @@
     clearTimeout(toast._t);
     toast._t = setTimeout(function () { el.style.display = 'none'; }, 3000);
   }
+
 })();
 </script>
 </body>

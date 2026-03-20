@@ -94,11 +94,11 @@
 
 				<div class="about">
 					<div class="me">
-						<img src="./img/me.jpg" alt="">
+						<img id="about-photo" src="./img/me.jpg" alt="Ari Shojaei">
 					</div>
 					<div>
-						<h1 class="font-headline">Ari Shojaei</h1>
-						<p>Born in 1995, I moved to another country to seek new adventures and opportunities. I started photography as a hobby and a way to communicate with new people. Along the way, I made many close friends because of this hobby, and as I go further, photography becomes more and more important. Now, I think big about my future in this field.</p>
+						<h1 id="about-name" class="font-headline">Ari Shojaei</h1>
+						<p id="about-bio">Born in 1995, I moved to another country to seek new adventures and opportunities. I started photography as a hobby and a way to communicate with new people. Along the way, I made many close friends because of this hobby, and as I go further, photography becomes more and more important. Now, I think big about my future in this field.</p>
 					</div>
 				</div>
 			</div>
@@ -147,11 +147,7 @@
 
 						<div>
 							<p>Social Links:</p>
-							<div class="social-links">
-								<a href="https://www.instagram.com/ario.shinn/" target="_blank" rel="noopener" aria-label="Follow on Instagram">Instagram</a>
-								<a href="https://unsplash.com/@arishojaei" target="_blank" rel="noopener" aria-label="View photos on Unsplash">Unsplash</a>
-								<a href="https://www.vogue.com/photovogue/photographers/383174" target="_blank" rel="noopener" aria-label="View profile on Vogue">Vogue</a>
-							</div>
+							<div class="social-links" id="footer-links"></div>
 						</div>
 					</div>
 
@@ -159,5 +155,46 @@
 				</footer>
 			</div>
 		</main>
-	</body>
+	
+	<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+	<script>
+		if (window.netlifyIdentity) {
+			window.netlifyIdentity.on('init', function(user) {
+				if (!user) {
+					window.netlifyIdentity.on('login', function() {
+						document.location.href = '/admin/';
+					});
+				}
+			});
+		}
+		(function() {
+			fetch('data/site.json')
+				.then(function(r) { return r.json(); })
+				.then(function(data) {
+					if (data.about) {
+						var n = document.getElementById('about-name');
+						var b = document.getElementById('about-bio');
+						var p = document.getElementById('about-photo');
+						if (n) n.textContent = data.about.name;
+						if (b) b.textContent = data.about.bio;
+						if (p && data.about.photo) p.src = data.about.photo;
+					}
+					var fl = document.getElementById('footer-links');
+					if (fl && data.footer) {
+						fl.innerHTML = '';
+						data.footer.links.forEach(function(link) {
+							var a = document.createElement('a');
+							a.href = link.url;
+							a.target = '_blank';
+							a.rel = 'noopener';
+							a.setAttribute('aria-label', link.aria || link.label);
+							a.textContent = link.label;
+							fl.appendChild(a);
+						});
+					}
+				})
+				.catch(function(err) { console.error('Failed to load site data:', err); });
+		})();
+	</script>
+</body>
 </html>

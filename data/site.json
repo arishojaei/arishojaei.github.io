@@ -1,0 +1,18 @@
+{
+  "header": {
+    "title": "Portrait photographer, Köln",
+    "subtitle": "Professional headshots, Personal portraits, Authentic moments. Portraits that tell your story"
+  },
+  "about": {
+    "name": "Ari Shojaei",
+    "bio": "Born in 1995, I moved to another country to seek new adventures and opportunities. I started photography as a hobby and a way to communicate with new people. Along the way, I made many close friends because of this hobby, and as I go further, photography becomes more and more important. Now, I think big about my future in this field.",
+    "photo": "img/me.jpg"
+  },
+  "footer": {
+    "links": [
+      { "label": "Instagram", "url": "https://www.instagram.com/ario.shinn/", "aria": "Follow on Instagram" },
+      { "label": "Unsplash", "url": "https://unsplash.com/@arishojaei", "aria": "View photos on Unsplash" },
+      { "label": "Vogue", "url": "https://www.vogue.com/photovogue/photographers/383174", "aria": "View profile on Vogue" }
+    ]
+  }
+}

@@ -168,8 +168,8 @@
 				</nav>
 
 				<header>
-					<h1>Portrait photographer, Köln</h1>
-					<p>Professional headshots, Personal portraits, Authentic moments. Portraits that tell your story</p>
+					<h1 id="site-title">Portrait photographer, Köln</h1>
+					<p id="site-subtitle">Professional headshots, Personal portraits, Authentic moments. Portraits that tell your story</p>
 				</header>
 
 				<section class="portfolio-section" aria-label="Hannah gallery">
@@ -224,11 +224,7 @@
 
 						<div>
 							<p>Social Links:</p>
-							<div class="social-links">
-								<a href="https://www.instagram.com/ario.shinn/" target="_blank" rel="noopener" aria-label="Follow on Instagram">Instagram</a>
-								<a href="https://unsplash.com/@arishojaei" target="_blank" rel="noopener" aria-label="View photos on Unsplash">Unsplash</a>
-								<a href="https://www.vogue.com/photovogue/photographers/383174" target="_blank" rel="noopener" aria-label="View profile on Vogue">Vogue</a>
-							</div>
+							<div class="social-links" id="footer-links"></div>
 						</div>
 					</div>
 
@@ -250,41 +246,68 @@
 			});
 		}
 
-		(function() {
-			var container = document.querySelector('.portfolio');
-			fetch('data/photos.json')
-				.then(function(r) { return r.json(); })
-				.then(function(data) {
-					var fragment = document.createDocumentFragment();
-					data.photos.forEach(function(photo) {
-						var wrapper = document.createElement('div');
-						var img = document.createElement('img');
-						img.src = photo.src;
-						img.alt = photo.alt;
-						img.loading = 'lazy';
-						img.setAttribute('role', 'img');
-						img.setAttribute('tabindex', '0');
-						wrapper.appendChild(img);
-						fragment.appendChild(wrapper);
-					});
-					container.appendChild(fragment);
-					Macy({
-						container: '.portfolio',
-						waitForImages: false,
-						margin: 24,
-						breakAt: {
-							1200: { columns: 4 },
-							992:  { columns: 3, margin: 24 },
-							560:  { columns: 2, margin: 16 },
-							10:   { columns: 1, margin: 16 }
-						}
-					});
-				})
-				.catch(function(err) {
-					console.error('Gallery failed to load:', err);
-					container.innerHTML = '<p style="padding:2rem">Photos temporarily unavailable.</p>';
+	(function() {
+		var container = document.querySelector('.portfolio');
+		Promise.all([
+			fetch('data/photos.json').then(function(r) { return r.json(); }),
+			fetch('data/site.json').then(function(r) { return r.json(); })
+		]).then(function(results) {
+			var photoData = results[0];
+			var siteData  = results[1];
+
+			// Update header
+			if (siteData.header) {
+				var t = document.getElementById('site-title');
+				var s = document.getElementById('site-subtitle');
+				if (t) t.textContent = siteData.header.title;
+				if (s) s.textContent = siteData.header.subtitle;
+			}
+
+			// Update footer links
+			var fl = document.getElementById('footer-links');
+			if (fl && siteData.footer) {
+				fl.innerHTML = '';
+				siteData.footer.links.forEach(function(link) {
+					var a = document.createElement('a');
+					a.href = link.url;
+					a.target = '_blank';
+					a.rel = 'noopener';
+					a.setAttribute('aria-label', link.aria || link.label);
+					a.textContent = link.label;
+					fl.appendChild(a);
 				});
-		})();
+			}
+
+			// Render gallery
+			var fragment = document.createDocumentFragment();
+			photoData.photos.forEach(function(photo) {
+				var wrapper = document.createElement('div');
+				var img = document.createElement('img');
+				img.src = photo.src;
+				img.alt = photo.alt;
+				img.loading = 'lazy';
+				img.setAttribute('role', 'img');
+				img.setAttribute('tabindex', '0');
+				wrapper.appendChild(img);
+				fragment.appendChild(wrapper);
+			});
+			container.appendChild(fragment);
+			Macy({
+				container: '.portfolio',
+				waitForImages: false,
+				margin: 24,
+				breakAt: {
+					1200: { columns: 4 },
+					992:  { columns: 3, margin: 24 },
+					560:  { columns: 2, margin: 16 },
+					10:   { columns: 1, margin: 16 }
+				}
+			});
+		}).catch(function(err) {
+			console.error('Failed to load:', err);
+			container.innerHTML = '<p style="padding:2rem">Photos temporarily unavailable.</p>';
+		});
+	})();
 	</script>
 	</body>
 </html>
