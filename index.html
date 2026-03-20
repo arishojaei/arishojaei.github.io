@@ -172,8 +172,10 @@
 		.gallery-img-wrap img {
 			display: block;
 			width: auto;
+			min-width: calc(var(--gh, 55vh) * 0.67);
 			max-width: 36vw;
 			height: var(--gh, 55vh);
+			aspect-ratio: 2/3;
 			object-fit: cover;
 			pointer-events: none;
 		}
@@ -373,7 +375,14 @@
 			// ── Desktop: horizontal scroll gallery ─────────────────────
 			if (window.innerWidth >= 1025) {
 				buildHorizontalGallery(photoData.photos);
-				initHorizontalScroll(photoData.photos);
+				// Defer GSAP init until window.load so images have real dimensions
+				var _photos = photoData.photos;
+				function _initScroll() { initHorizontalScroll(_photos); }
+				if (document.readyState === "complete") {
+					_initScroll();
+				} else {
+					window.addEventListener("load", _initScroll);
+				}
 			} else {
 				// ── Mobile: masonry ──────────────────────────────────
 				var fragment = document.createDocumentFragment();
@@ -434,7 +443,7 @@
 			img.src           = photo.src;
 			img.alt           = photo.alt;
 			img.style.cssText = '--gh:' + preset.h + '; height:' + preset.h;
-			img.loading       = 'lazy';
+			// No lazy loading — images must load for GSAP to measure strip width
 
 			wrap.appendChild(img);
 			item.appendChild(wrap);
