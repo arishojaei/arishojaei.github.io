@@ -131,86 +131,6 @@
 			}
 			</script>
 	
-	<style>
-		/* ── Desktop horizontal gallery ──────────────────── */
-		@media (min-width: 1025px) {
-			.portfolio-section { display: none !important; }
-			.gallery-h         { display: block; }
-		}
-		@media (max-width: 1024px) {
-			.gallery-h { display: none; }
-		}
-
-		.gallery-h {
-			display: none;
-			position: relative;
-			width: 100%;
-			height: 100vh;
-			overflow: hidden;
-			background: #fff;
-		}
-
-		.gallery-strip {
-			display: flex;
-			align-items: flex-start;
-			height: 100%;
-			padding: 0 14vw 0 8vw;
-			gap: 52px;
-			will-change: transform;
-		}
-
-		.gallery-item {
-			flex-shrink: 0;
-			position: relative;
-		}
-
-		.gallery-img-wrap {
-			overflow: hidden;
-			border: 1px solid #111;
-		}
-
-		.gallery-img-wrap img {
-			display: block;
-			width: auto;
-			min-width: calc(var(--gh, 55vh) * 0.67);
-			max-width: 36vw;
-			height: var(--gh, 55vh);
-			aspect-ratio: 2/3;
-			object-fit: cover;
-			pointer-events: none;
-		}
-
-		/* Label: bottom-left */
-		.gallery-label {
-			position: absolute;
-			left: 4%;
-			bottom: 11%;
-			z-index: 10;
-			pointer-events: none;
-		}
-
-		.gallery-label__name {
-			display: block;
-			font-family: 'Instrument Serif', serif;
-			font-size: clamp(1.1rem, 2.2vw, 2rem);
-			font-weight: 400;
-			color: #111;
-			line-height: 1.2;
-			margin-bottom: 5px;
-		}
-
-		.gallery-label__ig {
-			display: inline-block;
-			font-family: 'Jost', sans-serif;
-			font-size: 0.8rem;
-			letter-spacing: 0.04em;
-			color: #888;
-			text-decoration: none;
-			pointer-events: all;
-			transition: color 0.15s;
-		}
-		.gallery-label__ig:hover { color: #111; }
-	</style>
 </head>
 
 	<body>
@@ -261,13 +181,6 @@
 				</section>
 			</div>
 
-		<section id="gallery-h" class="gallery-h" aria-label="Photography Portfolio Gallery">
-			<div class="gallery-strip" id="gallery-strip"></div>
-			<div class="gallery-label">
-				<span class="gallery-label__name" id="label-name"></span>
-				<a class="gallery-label__ig" id="label-ig" target="_blank" rel="noopener" style="display:none"></a>
-			</div>
-		</section>
 
 			<div class="scrolling-text">
 				<div class="rail">
@@ -322,8 +235,6 @@
 			</div>
 		</main>
 
-	<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
 	<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/macy@2"></script>
 	<script>
@@ -346,8 +257,6 @@
 		]).then(function(results) {
 			var photoData  = results[0];
 			var siteData   = results[1];
-			var modelsData = results[2];
-			window._modelCache = modelsData.models || [];
 
 			// Update header
 			if (siteData.header) {
@@ -372,182 +281,36 @@
 				});
 			}
 
-			// ── Desktop: horizontal scroll gallery ─────────────────────
-			if (window.innerWidth >= 1025) {
-				buildHorizontalGallery(photoData.photos);
-				// Defer GSAP init until window.load so images have real dimensions
-				var _photos = photoData.photos;
-				function _initScroll() { initHorizontalScroll(_photos); }
-				if (document.readyState === "complete") {
-					_initScroll();
-				} else {
-					window.addEventListener("load", _initScroll);
+			// Render gallery
+			var fragment = document.createDocumentFragment();
+			photoData.photos.forEach(function(photo) {
+				var wrapper = document.createElement('div');
+				var img = document.createElement('img');
+				img.src = photo.src;
+				img.alt = photo.alt;
+				img.loading = 'lazy';
+				img.setAttribute('role', 'img');
+				img.setAttribute('tabindex', '0');
+				wrapper.appendChild(img);
+				fragment.appendChild(wrapper);
+			});
+			container.appendChild(fragment);
+			Macy({
+				container: '.portfolio',
+				waitForImages: false,
+				margin: 24,
+				breakAt: {
+					1200: { columns: 4 },
+					992:  { columns: 3, margin: 24 },
+					560:  { columns: 2, margin: 16 },
+					10:   { columns: 1, margin: 16 }
 				}
-			} else {
-				// ── Mobile: masonry ──────────────────────────────────
-				var fragment = document.createDocumentFragment();
-				photoData.photos.forEach(function(photo) {
-					var wrapper = document.createElement('div');
-					var img = document.createElement('img');
-					img.src = photo.src;
-					img.alt = photo.alt;
-					img.loading = 'lazy';
-					img.setAttribute('role', 'img');
-					img.setAttribute('tabindex', '0');
-					wrapper.appendChild(img);
-					fragment.appendChild(wrapper);
-				});
-				container.appendChild(fragment);
-				Macy({
-					container: '.portfolio',
-					waitForImages: false,
-					margin: 24,
-					breakAt: {
-						1200: { columns: 4 },
-						992:  { columns: 3, margin: 24 },
-						560:  { columns: 2, margin: 16 },
-						10:   { columns: 1, margin: 16 }
-					}
-				});
-			}
+			});
 		}).catch(function(err) {
 			console.error('Failed to load:', err);
 			container.innerHTML = '<p style="padding:2rem">Photos temporarily unavailable.</p>';
 		});
 	})();
-
-	// ── Horizontal gallery builder ───────────────────────────────────────────
-	var PRESETS = [
-		{ top: '8vh',  h: '58vh' },
-		{ top: '30vh', h: '44vh' },
-		{ top: '14vh', h: '62vh' },
-		{ top: '36vh', h: '40vh' },
-		{ top: '22vh', h: '52vh' }
-	];
-
-	function buildHorizontalGallery(photos) {
-		var strip = document.getElementById('gallery-strip');
-		if (!strip) return;
-		photos.forEach(function(photo, i) {
-			var preset = PRESETS[i % PRESETS.length];
-			var item = document.createElement('div');
-			item.className = 'gallery-item';
-			item.style.marginTop = preset.top;
-			item.dataset.model = photo.model || '';
-			item.dataset.ig    = photo.instagram || '';
-
-			var wrap = document.createElement('div');
-			wrap.className = 'gallery-img-wrap';
-
-			var img = document.createElement('img');
-			img.src           = photo.src;
-			img.alt           = photo.alt;
-			img.style.cssText = '--gh:' + preset.h + '; height:' + preset.h;
-			// No lazy loading — images must load for GSAP to measure strip width
-
-			wrap.appendChild(img);
-			item.appendChild(wrap);
-			strip.appendChild(item);
-		});
-	}
-
-	function initHorizontalScroll(photos) {
-		if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
-		gsap.registerPlugin(ScrollTrigger);
-
-		var section  = document.getElementById('gallery-h');
-		var strip    = document.getElementById('gallery-strip');
-		var nameEl   = document.getElementById('label-name');
-		var igEl     = document.getElementById('label-ig');
-		var items    = Array.from(document.querySelectorAll('.gallery-item'));
-		if (!section || !strip || !items.length) return;
-
-		// Show first photo label immediately
-		setLabelContent(photos[0]);
-
-		var activeIdx = 0;
-
-		gsap.to(strip, {
-			x: function() { return -(strip.scrollWidth - window.innerWidth); },
-			ease: 'none',
-			scrollTrigger: {
-				trigger:           section,
-				pin:               true,
-				start:             'top top',
-				end:               function() { return '+=' + (strip.scrollWidth - window.innerWidth); },
-				scrub:             1.2,
-				anticipatePin:     1,
-				invalidateOnRefresh: true,
-				onUpdate: function() {
-					// Find item closest to 30% from left viewport edge
-					var targetX  = window.innerWidth * 0.30;
-					var bestIdx  = 0;
-					var bestDist = Infinity;
-					items.forEach(function(item, i) {
-						var r  = item.getBoundingClientRect();
-						var cx = r.left + r.width * 0.5;
-						var d  = Math.abs(cx - targetX);
-						if (d < bestDist) { bestDist = d; bestIdx = i; }
-					});
-					if (bestIdx !== activeIdx) {
-						activeIdx = bestIdx;
-						animateLabelTo(photos[bestIdx]);
-					}
-				}
-			}
-		});
-	}
-
-	function animateLabelTo(photo) {
-		var nameEl = document.getElementById('label-name');
-		var igEl   = document.getElementById('label-ig');
-		if (!nameEl || !igEl) return;
-		gsap.killTweensOf([nameEl, igEl]);
-		gsap.to([nameEl, igEl], {
-			opacity: 0, y: -6, duration: 0.12, ease: 'power2.in',
-			onComplete: function() {
-				setLabelContent(photo);
-				gsap.fromTo([nameEl, igEl],
-					{ opacity: 0, y: 6 },
-					{ opacity: 1, y: 0, duration: 0.2, ease: 'power2.out' }
-				);
-			}
-		});
-	}
-
-	function setLabelContent(photo) {
-		var nameEl = document.getElementById('label-name');
-		var igEl   = document.getElementById('label-ig');
-		if (!nameEl || !igEl) return;
-		var modelName = photo && photo.model ? photo.model : '';
-		// Try to get display name from siteModels cache
-		var displayName = modelName;
-		if (window._modelCache && modelName) {
-			var found = window._modelCache.filter(function(m){ return m.slug === modelName; })[0];
-			if (found) displayName = found.name;
-		}
-		nameEl.textContent = displayName;
-		if (modelName) {
-			nameEl.style.cursor = 'pointer';
-			nameEl.onclick = function() { window.location.href = '/' + modelName; };
-		} else {
-			nameEl.style.cursor = '';
-			nameEl.onclick = null;
-		}
-		if (photo && photo.instagram) {
-			var match  = photo.instagram.match(/instagram\.com\/([^/?#]+)/);
-			var handle = match ? match[1] : '';
-			if (handle) {
-				igEl.textContent  = '@' + handle;
-				igEl.href         = photo.instagram;
-				igEl.style.display = '';
-				return;
-			}
-		}
-		igEl.textContent   = '';
-		igEl.style.display = 'none';
-	}
-
 	</script>
 	</body>
 </html>
