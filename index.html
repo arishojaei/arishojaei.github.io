@@ -331,8 +331,8 @@
 		var container = document.querySelector('.portfolio');
 		Promise.all([
 			fetch('data/photos.json').then(function(r) { return r.json(); }),
-			fetch('data/site.json').then(function(r) { return r.json(); }),
-			fetch('data/models.json').then(function(r) { return r.json(); })
+			fetch('data/site.json').then(function(r) { return r.json(); }).catch(function() { return {}; }),
+			fetch('data/models.json').then(function(r) { return r.json(); }).catch(function() { return { models: [] }; })
 		]).then(function(results) {
 			var photoData  = results[0];
 			var siteData   = results[1];
